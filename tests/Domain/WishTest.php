@@ -107,6 +107,14 @@ class WishTest extends TestCase
     }
 
     /**
+     * @expectedException \Wishlist\Domain\Exception\WishIsAlreadyFulfilledException
+     */
+    public function testMustNotCreateAFulfilledWish()
+    {
+        $this->createWishWithPriceAndFund(100, 200);
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      */
     public function testDepositAndPriceCurrenciesMustMatch()
