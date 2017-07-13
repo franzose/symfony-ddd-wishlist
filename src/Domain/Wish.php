@@ -2,6 +2,9 @@
 
 namespace Wishlist\Domain;
 
+use DateInterval;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
@@ -69,6 +72,34 @@ class Wish
         return $difference->isNegative()
             ? $difference->absolute()
             : new Money(0, $this->getCurrency());
+    }
+
+    public function predictFulfillmentDateBasedOnFee(): DateTimeInterface
+    {
+        $daysToGo = ceil(
+            $this->getPrice()
+            ->divide($this->getFee()->getAmount())
+            ->getAmount()
+        );
+
+        return $this->createFutureDate($daysToGo);
+    }
+
+    public function predictFulfillmentDateBasedOnFund(): DateTimeInterface
+    {
+        $daysToGo = ceil(
+            $this->getPrice()
+            ->subtract($this->getFund())
+            ->divide($this->getFee()->getAmount())
+            ->getAmount()
+        );
+
+        return $this->createFutureDate($daysToGo);
+    }
+
+    private function createFutureDate($daysToGo): DateTimeInterface
+    {
+        return (new DateTimeImmutable())->add(new DateInterval("P{$daysToGo}D"));
     }
 
     public function publish()

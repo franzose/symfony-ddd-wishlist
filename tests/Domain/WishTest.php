@@ -2,6 +2,8 @@
 
 namespace Wishlist\Tests\Domain;
 
+use DateInterval;
+use DateTimeImmutable;
 use Money\Currency;
 use Money\Money;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
@@ -72,6 +74,41 @@ class WishTest extends TestCase
         static::assertTrue($wish->calculateSurplusFunds()->equals($expected));
     }
 
+    public function testFulfillmentDatePredictionBasedOnFee()
+    {
+        $price = 1500;
+        $fee = 20;
+        $wish = $this->createWishWithPriceAndFee($price, $fee);
+        $daysToGo = ceil($price / $fee);
+
+        $expected = (new DateTimeImmutable())->add(new DateInterval("P{$daysToGo}D"));
+        $diff = $wish->predictFulfillmentDateBasedOnFee()->diff($expected);
+        static::assertTrue($diff->d === 0);
+        static::assertTrue($diff->m === 0);
+        static::assertTrue($diff->y === 0);
+        static::assertTrue($diff->h === 0);
+        static::assertTrue($diff->i === 0);
+        static::assertTrue($diff->s === 0);
+    }
+
+    public function testFulfillmentDatePredictionBasedOnFund()
+    {
+        $price = 1500;
+        $fund = 250;
+        $fee = 25;
+        $wish = $this->createWish($price, $fee, $fund);
+        $daysToGo = ceil(($price - $fund) / $fee);
+
+        $expected = (new DateTimeImmutable())->add(new DateInterval("P{$daysToGo}D"));
+        $diff = $wish->predictFulfillmentDateBasedOnFund()->diff($expected);
+        static::assertTrue($diff->d === 0);
+        static::assertTrue($diff->m === 0);
+        static::assertTrue($diff->y === 0);
+        static::assertTrue($diff->h === 0);
+        static::assertTrue($diff->i === 0);
+        static::assertTrue($diff->s === 0);
+    }
+
     public function testPublishShouldPublishTheWish()
     {
         $wish = $this->createWishWithEmptyFund();
@@ -112,6 +149,33 @@ class WishTest extends TestCase
                 new Currency('USD'),
                 $price,
                 10,
+                $fund
+            )
+        );
+    }
+
+    private function createWishWithPriceAndFee(int $price, int $fee): Wish
+    {
+        return new Wish(
+            WishId::next(),
+            new WishName('Bicycle'),
+            Expense::fromCurrencyAndScalars(
+                new Currency('USD'),
+                $price,
+                $fee
+            )
+        );
+    }
+
+    private function createWish(int $price, int $fee, int $fund): Wish
+    {
+        return new Wish(
+            WishId::next(),
+            new WishName('Bicycle'),
+            Expense::fromCurrencyAndScalars(
+                new Currency('USD'),
+                $price,
+                $fee,
                 $fund
             )
         );
