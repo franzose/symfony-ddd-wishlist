@@ -97,11 +97,38 @@ class WishTest extends TestCase
     }
 
     /**
+     * @param Wish $wish
+     * @expectedException \Wishlist\Domain\Exception\WishIsUnavailableToDepositException
+     * @dataProvider mustNotDepositDataProvider
+     */
+    public function testMustNotDeposit(Wish $wish)
+    {
+        $wish->deposit(new Money(100, new Currency('USD')));
+        $wish->deposit(new Money(100, new Currency('USD')));
+    }
+
+    public function mustNotDepositDataProvider()
+    {
+        $fulfilled = $this->createWishWithPriceAndFund(500, 450);
+        $fulfilled->publish();
+
+        return [
+            'Should not create a deposit if the wish is unpublished' => [
+                $this->createWishWithEmptyFund()
+            ],
+            'Should not create a deposit if the wish is already fulfilled' => [
+                $fulfilled
+            ]
+        ];
+    }
+
+    /**
      * @expectedException \InvalidArgumentException
      */
     public function testDepositAndPriceCurrenciesMustMatch()
     {
         $wish = $this->createWishWithEmptyFund();
+        $wish->publish();
 
         $wish->deposit(new Money(125, new Currency('RUB')));
     }

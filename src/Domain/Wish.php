@@ -6,6 +6,7 @@ use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\WishIsAlreadyFulfilledException;
+use Wishlist\Domain\Exception\WishIsUnavailableToDepositException;
 
 class Wish
 {
@@ -55,13 +56,23 @@ class Wish
 
     public function deposit(Money $amount)
     {
+        $this->assertCanDeposit($amount);
+
+        $this->moneybox->deposit(new Deposit(DepositId::next(), $this, $amount));
+
+        $this->fulfillTheWishIfNeeded();
+    }
+
+    private function assertCanDeposit(Money $amount)
+    {
+        if (!$this->published || $this->fulfilled) {
+            throw new WishIsUnavailableToDepositException();
+        }
+
         Assert::true(
             $amount->isSameCurrency($this->price),
             'Deposit currency must match the price\'s one.'
         );
-
-        $this->moneybox->deposit(new Deposit(DepositId::next(), $this, $amount));
-        $this->fulfillTheWishIfNeeded();
     }
 
     private function fulfillTheWishIfNeeded(): void
