@@ -55,7 +55,12 @@ class Wish
 
     public function deposit(Money $amount)
     {
-        $this->moneybox->deposit($amount);
+        Assert::true(
+            $amount->isSameCurrency($this->price),
+            'Deposit currency must match the price\'s one.'
+        );
+
+        $this->moneybox->deposit(new Deposit(DepositId::next(), $this, $amount));
         $this->fulfillTheWishIfNeeded();
     }
 

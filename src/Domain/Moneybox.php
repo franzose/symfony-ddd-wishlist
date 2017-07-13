@@ -4,7 +4,6 @@ namespace Wishlist\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Money\Money;
-use Webmozart\Assert\Assert;
 use Wishlist\Util\ExtendedCollection;
 
 final class Moneybox
@@ -22,11 +21,9 @@ final class Moneybox
         $this->deposits = new ArrayCollection();
     }
 
-    public function deposit(Money $money)
+    public function deposit(Deposit $deposit)
     {
-        Assert::true($money->isSameCurrency($this->fund), 'Deposit currency must match the fund one.');
-
-        $this->deposits->add(new Deposit(DepositId::next(), $this->wish, $money));
+        $this->deposits->add($deposit);
         $this->recalculateFund();
     }
 
