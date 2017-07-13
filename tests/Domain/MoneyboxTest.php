@@ -16,13 +16,32 @@ class MoneyboxTest extends TestCase
     public function testDepositMustRecalculateFund()
     {
         $wish = Mockery::mock(Wish::class);
-        $wish->shouldReceive('getCurrency')->andReturn(new Currency('USD'));
-        $wish->shouldReceive('isPublished')->andReturn(true);
-        $wish->shouldReceive('isFulfilled')->andReturn(false);
+        $wish->shouldReceive('getCurrency')->once()->andReturn(new Currency('USD'));
+        $wish->shouldReceive('isPublished')->once()->andReturn(true);
+        $wish->shouldReceive('isFulfilled')->once()->andReturn(false);
         $moneybox = new Moneybox($wish);
-        $deposit = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
+        $depositOne = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
+        $depositTwo = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
 
-        $moneybox->deposit($deposit);
+        $moneybox->deposit($depositOne);
+        $moneybox->deposit($depositTwo);
+
+        static::assertEquals(300, $moneybox->getFund()->getAmount());
+    }
+
+    public function testWithdrawMustRecalculateFund()
+    {
+        $wish = Mockery::mock(Wish::class);
+        $wish->shouldReceive('getCurrency')->once()->andReturn(new Currency('USD'));
+        $wish->shouldReceive('isPublished')->once()->andReturn(true);
+        $wish->shouldReceive('isFulfilled')->once()->andReturn(false);
+        $moneybox = new Moneybox($wish);
+        $depositOne = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
+        $depositTwo = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
+
+        $moneybox->deposit($depositOne);
+        $moneybox->deposit($depositTwo);
+        $moneybox->withdraw($depositOne);
 
         static::assertEquals(150, $moneybox->getFund()->getAmount());
     }

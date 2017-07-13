@@ -55,7 +55,7 @@ class WishTest extends TestCase
         $wish->publish();
 
         $wish->deposit(new Money(100, new Currency('USD')));
-        $wish->deposit(new Money(100, new Currency('USD')));
+        $wish->deposit(new Money(200, new Currency('USD')));
 
         $expected = new Money(100, new Currency('USD'));
         static::assertTrue($wish->calculateSurplusFunds()->equals($expected));

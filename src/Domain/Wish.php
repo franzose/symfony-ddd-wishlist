@@ -57,6 +57,11 @@ class Wish
         return $this->fulfilled;
     }
 
+    public function withdraw(Deposit $deposit)
+    {
+        $this->moneybox->withdraw($deposit);
+    }
+
     public function calculateSurplusFunds(): Money
     {
         $difference = $this->expense->getPrice()->subtract($this->moneybox->getFund());
