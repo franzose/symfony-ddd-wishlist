@@ -9,15 +9,13 @@ use Wishlist\Util\ExtendedCollection;
 final class Moneybox
 {
     private $wish;
-    private $currency;
     private $fund;
     private $deposits;
 
     public function __construct(Wish $wish, Money $fund = null)
     {
         $this->wish = $wish;
-        $this->currency = $wish->getCurrency();
-        $this->fund = $fund ?? $this->createEmptyFund();
+        $this->fund = $fund ?? new Money(0, $wish->getCurrency());
         $this->deposits = new ArrayCollection();
     }
 
@@ -43,10 +41,5 @@ final class Moneybox
     public function keepsEqualOrMore(Money $amount)
     {
         return $this->fund->greaterThanOrEqual($amount);
-    }
-
-    private function createEmptyFund(): Money
-    {
-        return new Money(0, $this->currency);
     }
 }
