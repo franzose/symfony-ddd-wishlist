@@ -19,12 +19,12 @@ class Wish
 
     public function __construct(
         WishId $id,
-        $name,
+        WishName $name,
         Money $price,
         Money $fee,
         Money $fund = null
     ) {
-        $this->makeIntegrityAssertions($name, $price, $fee, $fund);
+        $this->makeIntegrityAssertions($price, $fee, $fund);
 
         $this->id       = $id;
         $this->name     = $name;
@@ -33,9 +33,8 @@ class Wish
         $this->moneybox = new Moneybox($this, $fund);
     }
 
-    private function makeIntegrityAssertions($name, Money $price, Money $fee, Money $fund = null): void
+    private function makeIntegrityAssertions(Money $price, Money $fee, Money $fund = null): void
     {
-        Assert::notEmpty($name, 'Name must not be null.');
         Assert::true($price->isSameCurrency($fee), 'Currencies must match.');
         Assert::true($price->isPositive(), 'Price cannot be zero');
         Assert::true($fee->isPositive(), 'Fee must not be zero.');
@@ -111,9 +110,9 @@ class Wish
         return $this->id;
     }
 
-    public function getName()
+    public function getName(): string
     {
-        return $this->name;
+        return (string) $this->name;
     }
 
     public function getPrice(): Money

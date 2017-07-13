@@ -7,32 +7,10 @@ use Money\Money;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Wishlist\Domain\Wish;
 use Wishlist\Domain\WishId;
+use Wishlist\Domain\WishName;
 
 class WishTest extends TestCase
 {
-    /**
-     * @param string|null $name
-     * @expectedException \InvalidArgumentException
-     * @dataProvider wishNamesDataProvider
-     */
-    public function testNameCannotBeEmpty($name)
-    {
-        new Wish(
-            WishId::next(),
-            $name,
-            new Money(1000, new Currency('USD')),
-            new Money(100, new Currency('USD'))
-        );
-    }
-
-    public function wishNamesDataProvider()
-    {
-        return [
-            'Wish name cannot be NULL' => [null],
-            'Wish name cannot be an empty string' => ['']
-        ];
-    }
-
     /**
      * @expectedException \InvalidArgumentException
      */
@@ -40,7 +18,7 @@ class WishTest extends TestCase
     {
         new Wish(
             WishId::next(),
-            'Bicycle',
+            new WishName('Bicycle'),
             new Money(0, new Currency('USD')),
             new Money(100, new Currency('USD'))
         );
@@ -53,14 +31,14 @@ class WishTest extends TestCase
     {
         new Wish(
             WishId::next(),
-            'Bicycle',
+            new WishName('Bicycle'),
             new Money(1000, new Currency('USD')),
             new Money(0, new Currency('USD'))
         );
     }
 
     /**
-     * @param string     $name
+     * @param WishName   $name
      * @param Money      $price
      * @param Money      $dailyFee
      * @param Money|null $fund
@@ -69,7 +47,7 @@ class WishTest extends TestCase
      * @dataProvider currencyTestDataProvider
      */
     public function testThereShouldBeASingleCurrency(
-        string $name,
+        WishName $name,
         Money $price,
         Money $dailyFee,
         Money $fund = null
@@ -81,13 +59,13 @@ class WishTest extends TestCase
     {
         return [
             'Currencies of price and daily fee must match' => [
-                'Bicycle',
+                new WishName('Bicycle'),
                 new Money(1000, new Currency('USD')),
                 new Money(100, new Currency('RUB')),
                 null
             ],
             'Currencies of price, daily fee and fun must match' => [
-                'Bicycle',
+                new WishName('Bicycle'),
                 new Money(1000, new Currency('USD')),
                 new Money(100, new Currency('USD')),
                 new Money(100, new Currency('RUB'))
@@ -173,7 +151,7 @@ class WishTest extends TestCase
     {
         return new Wish(
             WishId::next(),
-            'Bicycle',
+            new WishName('Bicycle'),
             new Money(1000, new Currency('USD')),
             new Money(100, new Currency('USD'))
         );
@@ -183,7 +161,7 @@ class WishTest extends TestCase
     {
         return new Wish(
             WishId::next(),
-            'Bicycle',
+            new WishName('Bicycle'),
             new Money(1000, new Currency('USD')),
             new Money(100, new Currency('USD')),
             new Money($fund, new Currency('USD'))
@@ -194,7 +172,7 @@ class WishTest extends TestCase
     {
         return new Wish(
             WishId::next(),
-            'Bicycle',
+            new WishName('Bicycle'),
             new Money($price, new Currency('USD')),
             new Money(100, new Currency('USD')),
             new Money($fund, new Currency('USD'))
