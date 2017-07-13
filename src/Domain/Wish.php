@@ -2,11 +2,10 @@
 
 namespace Wishlist\Domain;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\WishIsAlreadyFulfilledException;
-use Wishlist\Util\ExtendedCollection;
 
 class Wish
 {
@@ -14,7 +13,6 @@ class Wish
     private $name;
     private $price;
     private $moneybox;
-    private $fund;
     private $fee;
     private $published = false;
     private $fulfilled = false;
@@ -32,8 +30,7 @@ class Wish
         $this->name     = $name;
         $this->price    = $price;
         $this->fee      = $fee;
-        $this->moneybox = new ArrayCollection();
-        $this->fund = $fund ?? $this->createZeroAmountOfMoney();
+        $this->moneybox = new Moneybox($this, $fund);
     }
 
     private function makeIntegrityAssertions($name, Money $price, Money $fee, Money $fund = null): void
@@ -59,45 +56,29 @@ class Wish
 
     public function deposit(Money $amount)
     {
-        Assert::true($amount->isSameCurrency($this->price), 'Currencies must match.');
-
-        $this->moneybox->add(new Deposit(DepositId::next(), $this, $amount));
-        $this->recalculateFund();
+        $this->moneybox->deposit($amount);
         $this->fulfillTheWishIfNeeded();
-    }
-
-    private function recalculateFund()
-    {
-        $this->fund = (new ExtendedCollection($this->moneybox))
-            ->reduce(function (Money $fund, Deposit $deposit) {
-                return $deposit->getMoney()->add($fund);
-            }, $this->fund);
     }
 
     private function fulfillTheWishIfNeeded(): void
     {
-        if ($this->fund->greaterThanOrEqual($this->price)) {
+        if ($this->moneybox->keepsEqualOrMore($this->price)) {
             $this->fulfilled = true;
         }
     }
 
     public function getFund(): Money
     {
-        return $this->fund;
+        return $this->moneybox->getFund();
     }
 
     public function calculateSurplusFunds(): Money
     {
-        $difference = $this->price->subtract($this->fund);
+        $difference = $this->price->subtract($this->moneybox->getFund());
 
         return $difference->isNegative()
             ? $difference->absolute()
-            : $this->createZeroAmountOfMoney();
-    }
-
-    private function createZeroAmountOfMoney(): Money
-    {
-        return new Money(0, $this->price->getCurrency());
+            : new Money(0, $this->getCurrency());
     }
 
     public function getFee(): Money
@@ -138,5 +119,10 @@ class Wish
     public function getPrice(): Money
     {
         return $this->price;
+    }
+
+    public function getCurrency(): Currency
+    {
+        return $this->price->getCurrency();
     }
 }
