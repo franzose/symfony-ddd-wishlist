@@ -7,6 +7,7 @@ use Money\Currency;
 use Money\Money;
 use PHPUnit\Framework\TestCase;
 use Wishlist\Domain\Deposit;
+use Wishlist\Domain\DepositId;
 use Wishlist\Domain\Wish;
 
 class DepositTest extends TestCase
@@ -20,7 +21,7 @@ class DepositTest extends TestCase
     {
         $amount = new Money(100, new Currency('USD'));
 
-        new Deposit($wish, $amount);
+        new Deposit(DepositId::next(), $wish, $amount);
     }
 
     public function nonAcceptableWishDataProvider()
@@ -66,6 +67,6 @@ class DepositTest extends TestCase
 
         $amount = new Money(0, new Currency('USD'));
 
-        new Deposit($wish, $amount);
+        new Deposit(DepositId::next(), $wish, $amount);
     }
 }

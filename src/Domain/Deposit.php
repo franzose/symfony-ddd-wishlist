@@ -4,8 +4,6 @@ namespace Wishlist\Domain;
 
 use DateTime;
 use Money\Money;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\WishIsUnavailableToDepositException;
 
@@ -16,11 +14,11 @@ class Deposit
     private $amount;
     private $date;
 
-    public function __construct(Wish $wish, Money $amount)
+    public function __construct(DepositId $id, Wish $wish, Money $amount)
     {
         $this->makeIntegrityAssertions($wish, $amount);
 
-        $this->id = Uuid::uuid4();
+        $this->id = $id;
         $this->wish = $wish;
         $this->amount = $amount;
         $this->date = new DateTime('now');
@@ -35,7 +33,7 @@ class Deposit
         Assert::false($amount->isZero(), 'Deposit must not be empty.');
     }
 
-    public function getId(): UuidInterface
+    public function getId(): DepositId
     {
         return $this->id;
     }

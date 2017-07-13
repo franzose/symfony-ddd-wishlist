@@ -4,8 +4,6 @@ namespace Wishlist\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Money\Money;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\UuidInterface;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\WishIsAlreadyFulfilledException;
 use Wishlist\Util\ExtendedCollection;
@@ -22,6 +20,7 @@ class Wish
     private $fulfilled = false;
 
     public function __construct(
+        WishId $id,
         $name,
         Money $price,
         Money $fee,
@@ -29,7 +28,7 @@ class Wish
     ) {
         $this->makeIntegrityAssertions($name, $price, $fee, $fund);
 
-        $this->id       = Uuid::uuid4();
+        $this->id       = $id;
         $this->name     = $name;
         $this->price    = $price;
         $this->fee      = $fee;
@@ -62,7 +61,7 @@ class Wish
     {
         Assert::true($amount->isSameCurrency($this->price), 'Currencies must match.');
 
-        $this->moneybox->add(new Deposit($this, $amount));
+        $this->moneybox->add(new Deposit(DepositId::next(), $this, $amount));
         $this->recalculateFund();
         $this->fulfillTheWishIfNeeded();
     }
@@ -126,7 +125,7 @@ class Wish
         $this->published = false;
     }
 
-    public function getId(): UuidInterface
+    public function getId(): WishId
     {
         return $this->id;
     }

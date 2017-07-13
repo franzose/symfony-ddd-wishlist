@@ -6,6 +6,7 @@ use Money\Currency;
 use Money\Money;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
 use Wishlist\Domain\Wish;
+use Wishlist\Domain\WishId;
 
 class WishTest extends TestCase
 {
@@ -17,6 +18,7 @@ class WishTest extends TestCase
     public function testNameCannotBeEmpty($name)
     {
         new Wish(
+            WishId::next(),
             $name,
             new Money(1000, new Currency('USD')),
             new Money(100, new Currency('USD'))
@@ -37,6 +39,7 @@ class WishTest extends TestCase
     public function testPriceCannotBeZero()
     {
         new Wish(
+            WishId::next(),
             'Bicycle',
             new Money(0, new Currency('USD')),
             new Money(100, new Currency('USD'))
@@ -49,6 +52,7 @@ class WishTest extends TestCase
     public function testDailyFeeCannotBeZero()
     {
         new Wish(
+            WishId::next(),
             'Bicycle',
             new Money(1000, new Currency('USD')),
             new Money(0, new Currency('USD'))
@@ -70,7 +74,7 @@ class WishTest extends TestCase
         Money $dailyFee,
         Money $fund = null
     ) {
-        new Wish($name, $price, $dailyFee, $fund);
+        new Wish(WishId::next(), $name, $price, $dailyFee, $fund);
     }
 
     public function currencyTestDataProvider()
@@ -168,6 +172,7 @@ class WishTest extends TestCase
     private function createWishWithEmptyFund(): Wish
     {
         return new Wish(
+            WishId::next(),
             'Bicycle',
             new Money(1000, new Currency('USD')),
             new Money(100, new Currency('USD'))
@@ -177,6 +182,7 @@ class WishTest extends TestCase
     private function createWishWithFund(int $fund): Wish
     {
         return new Wish(
+            WishId::next(),
             'Bicycle',
             new Money(1000, new Currency('USD')),
             new Money(100, new Currency('USD')),
@@ -187,6 +193,7 @@ class WishTest extends TestCase
     private function createWishWithPriceAndFund(int $price, int $fund): Wish
     {
         return new Wish(
+            WishId::next(),
             'Bicycle',
             new Money($price, new Currency('USD')),
             new Money(100, new Currency('USD')),
