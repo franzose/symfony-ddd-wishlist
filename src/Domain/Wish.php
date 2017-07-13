@@ -27,6 +27,18 @@ class Wish
         Money $fee,
         Money $fund = null
     ) {
+        $this->makeIntegrityAssertions($name, $price, $fee, $fund);
+
+        $this->id       = Uuid::uuid4();
+        $this->name     = $name;
+        $this->price    = $price;
+        $this->fee      = $fee;
+        $this->moneybox = new ArrayCollection();
+        $this->fund = $fund ?? $this->createZeroAmountOfMoney();
+    }
+
+    private function makeIntegrityAssertions($name, Money $price, Money $fee, Money $fund = null): void
+    {
         Assert::notEmpty($name, 'Name must not be null.');
         Assert::true($price->isSameCurrency($fee), 'Currencies must match.');
         Assert::true($price->isPositive(), 'Price cannot be zero');
@@ -37,13 +49,6 @@ class Wish
         if ($fund instanceof Money) {
             Assert::true($fund->isSameCurrency($price), 'Currencies must match.');
         }
-
-        $this->id       = Uuid::uuid4();
-        $this->name     = $name;
-        $this->price    = $price;
-        $this->fee      = $fee;
-        $this->moneybox = new ArrayCollection();
-        $this->fund = $fund ?? $this->createZeroAmountOfMoney();
     }
 
     private function disallowCreatingAFulfilledWish(Money $price, Money $fund = null): void

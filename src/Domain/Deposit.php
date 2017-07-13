@@ -18,16 +18,21 @@ class Deposit
 
     public function __construct(Wish $wish, Money $amount)
     {
-        if (!$wish->isPublished() || $wish->isFulfilled()) {
-            throw new WishIsUnavailableToDepositException();
-        }
-
-        Assert::false($amount->isZero(), 'Deposit must not be empty.');
+        $this->makeIntegrityAssertions($wish, $amount);
 
         $this->id = Uuid::uuid4();
         $this->wish = $wish;
         $this->amount = $amount;
         $this->date = new DateTime('now');
+    }
+
+    private function makeIntegrityAssertions(Wish $wish, Money $amount): void
+    {
+        if (!$wish->isPublished() || $wish->isFulfilled()) {
+            throw new WishIsUnavailableToDepositException();
+        }
+
+        Assert::false($amount->isZero(), 'Deposit must not be empty.');
     }
 
     public function getId(): UuidInterface
