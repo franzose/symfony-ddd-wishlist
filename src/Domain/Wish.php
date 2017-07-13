@@ -5,53 +5,23 @@ namespace Wishlist\Domain;
 use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
-use Wishlist\Domain\Exception\WishIsAlreadyFulfilledException;
 use Wishlist\Domain\Exception\WishIsUnavailableToDepositException;
 
 class Wish
 {
     private $id;
     private $name;
-    private $price;
     private $moneybox;
-    private $fee;
     private $published = false;
     private $fulfilled = false;
+    private $expense;
 
-    public function __construct(
-        WishId $id,
-        WishName $name,
-        Money $price,
-        Money $fee,
-        Money $fund = null
-    ) {
-        $this->makeIntegrityAssertions($price, $fee, $fund);
-
-        $this->id       = $id;
-        $this->name     = $name;
-        $this->price    = $price;
-        $this->fee      = $fee;
-        $this->moneybox = new Moneybox($this, $fund);
-    }
-
-    private function makeIntegrityAssertions(Money $price, Money $fee, Money $fund = null): void
+    public function __construct(WishId $id, WishName $name, Expense $expense)
     {
-        Assert::true($price->isSameCurrency($fee), 'Currencies must match.');
-        Assert::true($price->isPositive(), 'Price cannot be zero');
-        Assert::true($fee->isPositive(), 'Fee must not be zero.');
-
-        $this->disallowCreatingAFulfilledWish($price, $fund);
-
-        if ($fund instanceof Money) {
-            Assert::true($fund->isSameCurrency($price), 'Currencies must match.');
-        }
-    }
-
-    private function disallowCreatingAFulfilledWish(Money $price, Money $fund = null): void
-    {
-        if (null !== $fund && $fund->greaterThanOrEqual($price)) {
-            throw new WishIsAlreadyFulfilledException();
-        }
+        $this->id = $id;
+        $this->name = $name;
+        $this->expense = $expense;
+        $this->moneybox = new Moneybox($this, $this->expense->getInitialFund());
     }
 
     public function deposit(Money $amount)
@@ -70,35 +40,16 @@ class Wish
         }
 
         Assert::true(
-            $amount->isSameCurrency($this->price),
+            $amount->isSameCurrency($this->expense->getPrice()),
             'Deposit currency must match the price\'s one.'
         );
     }
 
     private function fulfillTheWishIfNeeded(): void
     {
-        if ($this->moneybox->keepsEqualOrMore($this->price)) {
+        if ($this->moneybox->keepsEqualOrMore($this->expense->getPrice())) {
             $this->fulfilled = true;
         }
-    }
-
-    public function getFund(): Money
-    {
-        return $this->moneybox->getFund();
-    }
-
-    public function calculateSurplusFunds(): Money
-    {
-        $difference = $this->price->subtract($this->moneybox->getFund());
-
-        return $difference->isNegative()
-            ? $difference->absolute()
-            : new Money(0, $this->getCurrency());
-    }
-
-    public function getFee(): Money
-    {
-        return $this->fee;
     }
 
     public function isFulfilled(): bool
@@ -106,9 +57,13 @@ class Wish
         return $this->fulfilled;
     }
 
-    public function isPublished(): bool
+    public function calculateSurplusFunds(): Money
     {
-        return $this->published;
+        $difference = $this->expense->getPrice()->subtract($this->moneybox->getFund());
+
+        return $difference->isNegative()
+            ? $difference->absolute()
+            : new Money(0, $this->getCurrency());
     }
 
     public function publish()
@@ -119,6 +74,11 @@ class Wish
     public function unpublish()
     {
         $this->published = false;
+    }
+
+    public function isPublished(): bool
+    {
+        return $this->published;
     }
 
     public function getId(): WishId
@@ -133,11 +93,21 @@ class Wish
 
     public function getPrice(): Money
     {
-        return $this->price;
+        return $this->expense->getPrice();
+    }
+
+    public function getFee(): Money
+    {
+        return $this->expense->getFee();
+    }
+
+    public function getFund(): Money
+    {
+        return $this->moneybox->getFund();
     }
 
     public function getCurrency(): Currency
     {
-        return $this->price->getCurrency();
+        return $this->expense->getCurrency();
     }
 }

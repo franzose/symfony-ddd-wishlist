@@ -5,97 +5,13 @@ namespace Wishlist\Tests\Domain;
 use Money\Currency;
 use Money\Money;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Wishlist\Domain\Expense;
 use Wishlist\Domain\Wish;
 use Wishlist\Domain\WishId;
 use Wishlist\Domain\WishName;
 
 class WishTest extends TestCase
 {
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testPriceCannotBeZero()
-    {
-        new Wish(
-            WishId::next(),
-            new WishName('Bicycle'),
-            new Money(0, new Currency('USD')),
-            new Money(100, new Currency('USD'))
-        );
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testDailyFeeCannotBeZero()
-    {
-        new Wish(
-            WishId::next(),
-            new WishName('Bicycle'),
-            new Money(1000, new Currency('USD')),
-            new Money(0, new Currency('USD'))
-        );
-    }
-
-    /**
-     * @param WishName   $name
-     * @param Money      $price
-     * @param Money      $dailyFee
-     * @param Money|null $fund
-     *
-     * @expectedException \InvalidArgumentException
-     * @dataProvider currencyTestDataProvider
-     */
-    public function testThereShouldBeASingleCurrency(
-        WishName $name,
-        Money $price,
-        Money $dailyFee,
-        Money $fund = null
-    ) {
-        new Wish(WishId::next(), $name, $price, $dailyFee, $fund);
-    }
-
-    public function currencyTestDataProvider()
-    {
-        return [
-            'Currencies of price and daily fee must match' => [
-                new WishName('Bicycle'),
-                new Money(1000, new Currency('USD')),
-                new Money(100, new Currency('RUB')),
-                null
-            ],
-            'Currencies of price, daily fee and fun must match' => [
-                new WishName('Bicycle'),
-                new Money(1000, new Currency('USD')),
-                new Money(100, new Currency('USD')),
-                new Money(100, new Currency('RUB'))
-            ]
-        ];
-    }
-
-    public function testInitialFundMustBeZero()
-    {
-        $wish = $this->createWishWithEmptyFund();
-
-        static::assertTrue($wish->getFund()->isZero());
-    }
-
-    public function testInitialFundMustNotBeZero()
-    {
-        $wish = $this->createWishWithFund(500);
-        $expected = new Money(500, new Currency('USD'));
-
-        static::assertTrue($wish->getFund()->equals($expected));
-    }
-
-    /**
-     * @expectedException \Wishlist\Domain\Exception\WishIsAlreadyFulfilledException
-     */
-    public function testMustNotCreateAFulfilledWish()
-    {
-        $this->createWishWithPriceAndFund(100, 200);
-    }
-
     /**
      * @param Wish $wish
      * @expectedException \Wishlist\Domain\Exception\WishIsUnavailableToDepositException
@@ -179,19 +95,11 @@ class WishTest extends TestCase
         return new Wish(
             WishId::next(),
             new WishName('Bicycle'),
-            new Money(1000, new Currency('USD')),
-            new Money(100, new Currency('USD'))
-        );
-    }
-
-    private function createWishWithFund(int $fund): Wish
-    {
-        return new Wish(
-            WishId::next(),
-            new WishName('Bicycle'),
-            new Money(1000, new Currency('USD')),
-            new Money(100, new Currency('USD')),
-            new Money($fund, new Currency('USD'))
+            Expense::fromCurrencyAndScalars(
+                new Currency('USD'),
+                1000,
+                100
+            )
         );
     }
 
@@ -200,9 +108,12 @@ class WishTest extends TestCase
         return new Wish(
             WishId::next(),
             new WishName('Bicycle'),
-            new Money($price, new Currency('USD')),
-            new Money(100, new Currency('USD')),
-            new Money($fund, new Currency('USD'))
+            Expense::fromCurrencyAndScalars(
+                new Currency('USD'),
+                $price,
+                10,
+                $fund
+            )
         );
     }
 }
