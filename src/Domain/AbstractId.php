@@ -3,19 +3,25 @@
 namespace Wishlist\Domain;
 
 use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 
 abstract class AbstractId
 {
     protected $id;
 
-    private function __construct()
+    private function __construct(UuidInterface $id)
     {
-        $this->id = Uuid::uuid4();
+        $this->id = $id;
+    }
+
+    public static function fromString(string $id)
+    {
+        return new static(Uuid::fromString($id));
     }
 
     public static function next()
     {
-        return new static;
+        return new static(Uuid::uuid4());
     }
 
     public function getId(): string
