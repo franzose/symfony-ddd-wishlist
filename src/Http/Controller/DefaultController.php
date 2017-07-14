@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Controller;
+namespace Wishlist\Http\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
