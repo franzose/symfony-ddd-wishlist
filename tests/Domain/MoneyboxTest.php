@@ -36,12 +36,14 @@ class MoneyboxTest extends TestCase
         $wish->shouldReceive('isPublished')->once()->andReturn(true);
         $wish->shouldReceive('isFulfilled')->once()->andReturn(false);
         $moneybox = new Moneybox($wish);
-        $depositOne = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
-        $depositTwo = new Deposit(DepositId::next(), $wish, new Money(150, new Currency('USD')));
+        $depositIdOne = DepositId::next();
+        $depositIdTwo = DepositId::next();
+        $depositOne = new Deposit($depositIdOne, $wish, new Money(150, new Currency('USD')));
+        $depositTwo = new Deposit($depositIdTwo, $wish, new Money(150, new Currency('USD')));
 
         $moneybox->deposit($depositOne);
         $moneybox->deposit($depositTwo);
-        $moneybox->withdraw($depositOne);
+        $moneybox->withdraw($depositIdOne);
 
         static::assertEquals(150, $moneybox->getFund()->getAmount());
     }

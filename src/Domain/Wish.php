@@ -8,7 +8,7 @@ use DateTimeInterface;
 use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
-use Wishlist\Domain\Exception\WishIsUnavailableToDepositException;
+use Wishlist\Domain\Exception\WishIsInactiveException;
 
 class Wish
 {
@@ -31,19 +31,24 @@ class Wish
         $this->updatedAt = new DateTimeImmutable();
     }
 
-    public function deposit(Money $amount)
+    public function deposit(Money $amount): DepositId
     {
         $this->assertCanDeposit($amount);
 
-        $this->moneybox->deposit(new Deposit(DepositId::next(), $this, $amount));
+        $depositId = DepositId::next();
+        $this->moneybox->deposit(new Deposit($depositId, $this, $amount));
 
         $this->fulfillTheWishIfNeeded();
+
+        return $depositId;
     }
 
     private function assertCanDeposit(Money $amount)
     {
         if (!$this->published || $this->fulfilled) {
-            throw new WishIsUnavailableToDepositException();
+            throw new WishIsInactiveException(
+                'Deposit cannot be made.'
+            );
         }
 
         Assert::true(
@@ -64,9 +69,13 @@ class Wish
         return $this->fulfilled;
     }
 
-    public function withdraw(Deposit $deposit)
+    public function withdraw(DepositId $depositId)
     {
-        $this->moneybox->withdraw($deposit);
+        if (!$this->published || $this->fulfilled) {
+            throw new WishIsInactiveException('Withdraw cannot be made.');
+        }
+
+        $this->moneybox->withdraw($depositId);
     }
 
     public function calculateSurplusFunds(): Money

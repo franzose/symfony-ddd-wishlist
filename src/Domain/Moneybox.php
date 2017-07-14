@@ -4,7 +4,7 @@ namespace Wishlist\Domain;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Money\Money;
-use Wishlist\Domain\Exception\DepositDoesNotExistInMoneyboxException;
+use Wishlist\Domain\Exception\DepositDoesNotExistException;
 
 final class Moneybox
 {
@@ -25,14 +25,26 @@ final class Moneybox
         $this->fund = $this->fund->add($deposit->getMoney());
     }
 
-    public function withdraw(Deposit $deposit)
+    public function withdraw(DepositId $depositId)
     {
-        if (!$this->deposits->contains($deposit)) {
-            throw new DepositDoesNotExistInMoneyboxException();
-        }
-
+        $deposit = $this->getDepositById($depositId);
         $this->deposits->removeElement($deposit);
         $this->fund = $this->fund->subtract($deposit->getMoney());
+    }
+
+    private function getDepositById(DepositId $depositId): Deposit
+    {
+        $deposit = $this->deposits->filter(
+            function (Deposit $deposit) use ($depositId) {
+                return $deposit->getId()->equalTo($depositId);
+            }
+        )->first();
+
+        if (!$deposit) {
+            throw new DepositDoesNotExistException($depositId);
+        }
+
+        return $deposit;
     }
 
     public function getFund()

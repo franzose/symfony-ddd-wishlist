@@ -7,6 +7,7 @@ use DateTimeImmutable;
 use Money\Currency;
 use Money\Money;
 use Symfony\Bundle\FrameworkBundle\Tests\TestCase;
+use Wishlist\Domain\DepositId;
 use Wishlist\Domain\Expense;
 use Wishlist\Domain\Wish;
 use Wishlist\Domain\WishId;
@@ -16,7 +17,8 @@ class WishTest extends TestCase
 {
     /**
      * @param Wish $wish
-     * @expectedException \Wishlist\Domain\Exception\WishIsUnavailableToDepositException
+     *
+     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
      * @dataProvider mustNotDepositDataProvider
      */
     public function testMustNotDeposit(Wish $wish)
@@ -38,6 +40,31 @@ class WishTest extends TestCase
                 $fulfilled
             ]
         ];
+    }
+
+    /**
+     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
+     */
+    public function testMustNotWithdrawIfUnpublished()
+    {
+        $wish = $this->createWishWithPriceAndFund(500, 0);
+        $wish->publish();
+        $depositIdOne = $wish->deposit(new Money(100, new Currency('USD')));
+        $wish->unpublish();
+
+        $wish->withdraw($depositIdOne);
+    }
+
+    /**
+     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
+     */
+    public function testMustNotWithdrawIfFulfilled()
+    {
+        $wish = $this->createWishWithPriceAndFund(500, 450);
+        $wish->publish();
+        $depositIdOne = $wish->deposit(new Money(100, new Currency('USD')));
+
+        $wish->withdraw($depositIdOne);
     }
 
     /**

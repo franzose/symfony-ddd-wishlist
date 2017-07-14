@@ -29,6 +29,11 @@ abstract class AbstractId
         return $this->id->toString();
     }
 
+    public function equalTo(AbstractId $id): bool
+    {
+        return $this->getId() === $id->getId();
+    }
+
     public function __toString(): string
     {
         return $this->getId();
