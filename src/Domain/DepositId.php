@@ -2,7 +2,7 @@
 
 namespace Wishlist\Domain;
 
-class DepositId extends AbstractId
+final class DepositId extends AbstractId
 {
     //
 }
