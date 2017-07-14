@@ -2,7 +2,8 @@
 
 namespace Wishlist\Domain;
 
-use DateTime;
+use DateTimeImmutable;
+use DateTimeInterface;
 use Money\Money;
 use Webmozart\Assert\Assert;
 
@@ -11,7 +12,7 @@ class Deposit
     private $id;
     private $wish;
     private $amount;
-    private $date;
+    private $createdAt;
 
     public function __construct(DepositId $id, Wish $wish, Money $amount)
     {
@@ -20,7 +21,7 @@ class Deposit
         $this->id = $id;
         $this->wish = $wish;
         $this->amount = $amount;
-        $this->date = new DateTime('now');
+        $this->createdAt = new DateTimeImmutable();
     }
 
     public function getId(): DepositId
@@ -38,8 +39,8 @@ class Deposit
         return $this->amount;
     }
 
-    public function getDate(): DateTime
+    public function getDate(): DateTimeInterface
     {
-        return $this->date;
+        return $this->createdAt;
     }
 }

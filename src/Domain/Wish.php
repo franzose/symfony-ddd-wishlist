@@ -15,9 +15,11 @@ class Wish
     private $id;
     private $name;
     private $moneybox;
+    private $expense;
     private $published = false;
     private $fulfilled = false;
-    private $expense;
+    private $createdAt;
+    private $updatedAt;
 
     public function __construct(WishId $id, WishName $name, Expense $expense)
     {
@@ -25,6 +27,8 @@ class Wish
         $this->name = $name;
         $this->expense = $expense;
         $this->moneybox = new Moneybox($this, $this->expense->getInitialFund());
+        $this->createdAt = new DateTimeImmutable();
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function deposit(Money $amount)
@@ -145,5 +149,15 @@ class Wish
     public function getCurrency(): Currency
     {
         return $this->expense->getCurrency();
+    }
+
+    public function getCreatedAt(): DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function getUpdatedAt(): DateTimeInterface
+    {
+        return $this->updatedAt;
     }
 }
