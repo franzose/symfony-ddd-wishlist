@@ -1,0 +1,32 @@
+Wishlist\Domain\Wish:
+    type: entity
+    table: wishes
+    id:
+        id:
+            type: wish_id
+            generator:
+                strategy: none
+    embedded:
+        name:
+            class: Wishlist\Domain\WishName
+            columnPrefix: false
+        expense:
+            class: Wishlist\Domain\Expense
+            columnPrefix: false
+        moneybox:
+            class: Wishlist\Domain\Moneybox
+            columnPrefix: false
+    fields:
+        published:
+            type: boolean
+            nullable: false
+            options:
+                default: false
+        createdAt:
+            type: datetime
+            nullable: false
+            column: created_at
+        updatedAt:
+            type: datetime
+            nullable: false
+            column: updated_at

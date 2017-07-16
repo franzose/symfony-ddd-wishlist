@@ -1,0 +1,17 @@
+Wishlist\Domain\Deposit:
+    type: entity
+    table: deposits
+    id:
+        id:
+            type: deposit_id
+            generator:
+                strategy: none
+    embedded:
+        amount:
+            class: Money\Money
+            columnPrefix: false
+    fields:
+        createdAt:
+            type: datetime
+            nullable: false
+            column: created_at

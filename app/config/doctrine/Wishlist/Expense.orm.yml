@@ -1,0 +1,9 @@
+Wishlist\Domain\Expense:
+    type: embeddable
+    embedded:
+        price:
+            class: Money\Money
+        fee:
+            class: Money\Money
+        initialFund:
+            class: Money\Money

@@ -1,0 +1,7 @@
+Money\Currency:
+    type: embeddable
+    fields:
+        code:
+            type: string
+            nullable: false
+            length: 3

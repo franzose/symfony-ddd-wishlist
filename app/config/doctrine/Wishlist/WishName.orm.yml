@@ -1,0 +1,6 @@
+Wishlist\Domain\WishName:
+    type: embeddable
+    fields:
+        name:
+            type: string
+            nullable: false

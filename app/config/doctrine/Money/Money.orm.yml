@@ -1,0 +1,11 @@
+Money\Money:
+    type: embeddable
+    embedded:
+        currency:
+            class: Money\Currency
+    fields:
+        amount:
+            type: decimal
+            precision: 20
+            scale: 2
+            nullable: false

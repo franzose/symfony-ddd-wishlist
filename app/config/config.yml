@@ -48,15 +48,24 @@ doctrine:
         user: '%database_user%'
         password: '%database_password%'
         charset: UTF8
+        types:
+            wish_id: Wishlist\Infrastructure\Persistence\Doctrine\Type\WishIdType
+            deposit_id: Wishlist\Infrastructure\Persistence\Doctrine\Type\DepositIdType
 
     orm:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
         mappings:
+            Money:
+                type: yml
+                dir: "%kernel.root_dir%/config/doctrine/Money"
+                is_bundle: false
+                prefix: Money
+                alias: Money
             Wishlist\Domain:
                 type: yml
-                dir: "%kernel.root_dir%/config/doctrine"
+                dir: "%kernel.root_dir%/config/doctrine/Wishlist"
                 is_bundle: false
                 prefix: Wishlist\Domain
                 alias: Wishlist
