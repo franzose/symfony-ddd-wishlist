@@ -1,0 +1,16 @@
+version: "3.1"
+services:
+    db:
+        image: postgres:latest
+        restart: always
+        ports:
+            - "4500:5432"
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: userpass
+            POSTGRES_DB: symfony_wishlist
+    cache:
+        image: redis:latest
+        restart: always
+        ports:
+            - "4600:6379"
