@@ -6,6 +6,14 @@ Wishlist\Domain\Deposit:
             type: deposit_id
             generator:
                 strategy: none
+    manyToOne:
+        wish:
+            targetEntity: Wishlist\Domain\Wish
+            inversedBy: deposits
+            joinColumn:
+                name: wish_id
+                referencedColumnName: id
+                nullable: false
     embedded:
         amount:
             class: Money\Money
