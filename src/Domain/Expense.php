@@ -9,14 +9,12 @@ use Webmozart\Assert\Assert;
 final class Expense
 {
     private $price;
-    private $currency;
     private $fee;
     private $initialFund;
 
     private function __construct(Money $price, Money $fee, Money $initialFund)
     {
         $this->price = $price;
-        $this->currency = $this->price->getCurrency();
         $this->fee = $fee;
         $this->initialFund = $initialFund;
     }
@@ -45,7 +43,7 @@ final class Expense
 
     public function getCurrency(): Currency
     {
-        return $this->currency;
+        return $this->price->getCurrency();
     }
 
     public function getPrice(): Money
@@ -55,7 +53,7 @@ final class Expense
 
     public function changePrice(Money $amount): Expense
     {
-        Assert::true($amount->getCurrency()->equals($this->currency));
+        Assert::true($amount->getCurrency()->equals($this->getCurrency()));
 
         return new static($amount, $this->fee, $this->initialFund);
     }
@@ -67,7 +65,7 @@ final class Expense
 
     public function changeFee(Money $amount): Expense
     {
-        Assert::true($amount->getCurrency()->equals($this->currency));
+        Assert::true($amount->getCurrency()->equals($this->getCurrency()));
 
         return new static($this->price, $amount, $this->initialFund);
     }

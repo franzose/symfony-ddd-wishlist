@@ -17,8 +17,8 @@ class Wish
     private $id;
     private $name;
     private $expense;
+    /** @var Deposit[] */
     private $deposits;
-    private $fund;
     private $published = false;
     private $fulfilled = false;
     private $createdAt;
@@ -30,7 +30,6 @@ class Wish
         $this->name = $name;
         $this->expense = $expense;
         $this->deposits = new ArrayCollection();
-        $this->fund = $expense->getInitialFund();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -42,7 +41,6 @@ class Wish
         $depositId = DepositId::next();
         $deposit = new Deposit($depositId, $this, $amount);
         $this->deposits->add($deposit);
-        $this->fund = $this->fund->add($deposit->getMoney());
 
         $this->fulfillTheWishIfNeeded();
 
@@ -65,7 +63,7 @@ class Wish
 
     private function fulfillTheWishIfNeeded(): void
     {
-        if ($this->fund->greaterThanOrEqual($this->expense->getPrice())) {
+        if ($this->getFund()->greaterThanOrEqual($this->expense->getPrice())) {
             $this->fulfilled = true;
         }
     }
@@ -83,7 +81,6 @@ class Wish
 
         $deposit = $this->getDepositById($depositId);
         $this->deposits->removeElement($deposit);
-        $this->fund = $this->fund->subtract($deposit->getMoney());
     }
 
     private function getDepositById(DepositId $depositId): Deposit
@@ -103,7 +100,7 @@ class Wish
 
     public function calculateSurplusFunds(): Money
     {
-        $difference = $this->getPrice()->subtract($this->fund);
+        $difference = $this->getPrice()->subtract($this->getFund());
 
         return $difference->isNegative()
             ? $difference->absolute()
@@ -175,7 +172,9 @@ class Wish
 
     public function getFund(): Money
     {
-        return $this->fund;
+        return array_reduce($this->deposits->toArray(), function (Money $fund, Deposit $deposit) {
+            return $fund->add($deposit->getMoney());
+        }, $this->expense->getInitialFund());
     }
 
     public function getCurrency(): Currency
