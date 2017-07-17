@@ -39,8 +39,7 @@ class Wish
         $this->assertCanDeposit($amount);
 
         $depositId = DepositId::next();
-        $deposit = new Deposit($depositId, $this, $amount);
-        $this->deposits->add($deposit);
+        $this->deposits->add(new Deposit($depositId, $this, $amount));
 
         $this->fulfillTheWishIfNeeded();
 
