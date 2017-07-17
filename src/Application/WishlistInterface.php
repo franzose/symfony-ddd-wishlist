@@ -11,4 +11,5 @@ interface WishlistInterface
     public function withdraw(string $wishId, string $depositId, callable $formatter): string;
     public function publish(string $wishId);
     public function unpublish(string $wishId);
+    public function getWishesByPage(int $page, int $limit): array;
 }
