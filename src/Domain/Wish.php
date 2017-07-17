@@ -5,17 +5,20 @@ namespace Wishlist\Domain;
 use DateInterval;
 use DateTimeImmutable;
 use DateTimeInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
+use Wishlist\Domain\Exception\DepositDoesNotExistException;
 use Wishlist\Domain\Exception\WishIsInactiveException;
 
 class Wish
 {
     private $id;
     private $name;
-    private $moneybox;
     private $expense;
+    private $deposits;
+    private $fund;
     private $published = false;
     private $fulfilled = false;
     private $createdAt;
@@ -26,7 +29,8 @@ class Wish
         $this->id = $id;
         $this->name = $name;
         $this->expense = $expense;
-        $this->moneybox = new Moneybox($this, $this->expense->getInitialFund());
+        $this->deposits = new ArrayCollection();
+        $this->fund = $expense->getInitialFund();
         $this->createdAt = new DateTimeImmutable();
         $this->updatedAt = new DateTimeImmutable();
     }
@@ -36,7 +40,9 @@ class Wish
         $this->assertCanDeposit($amount);
 
         $depositId = DepositId::next();
-        $this->moneybox->deposit(new Deposit($depositId, $this, $amount));
+        $deposit = new Deposit($depositId, $this, $amount);
+        $this->deposits->add($deposit);
+        $this->fund = $this->fund->add($deposit->getMoney());
 
         $this->fulfillTheWishIfNeeded();
 
@@ -59,7 +65,7 @@ class Wish
 
     private function fulfillTheWishIfNeeded(): void
     {
-        if ($this->moneybox->keepsEqualOrMore($this->expense->getPrice())) {
+        if ($this->fund->greaterThanOrEqual($this->expense->getPrice())) {
             $this->fulfilled = true;
         }
     }
@@ -75,12 +81,29 @@ class Wish
             throw new WishIsInactiveException('Withdraw cannot be made.');
         }
 
-        $this->moneybox->withdraw($depositId);
+        $deposit = $this->getDepositById($depositId);
+        $this->deposits->removeElement($deposit);
+        $this->fund = $this->fund->subtract($deposit->getMoney());
+    }
+
+    private function getDepositById(DepositId $depositId): Deposit
+    {
+        $deposit = $this->deposits->filter(
+            function (Deposit $deposit) use ($depositId) {
+                return $deposit->getId()->equalTo($depositId);
+            }
+        )->first();
+
+        if (!$deposit) {
+            throw new DepositDoesNotExistException($depositId);
+        }
+
+        return $deposit;
     }
 
     public function calculateSurplusFunds(): Money
     {
-        $difference = $this->expense->getPrice()->subtract($this->moneybox->getFund());
+        $difference = $this->getPrice()->subtract($this->fund);
 
         return $difference->isNegative()
             ? $difference->absolute()
@@ -152,7 +175,7 @@ class Wish
 
     public function getFund(): Money
     {
-        return $this->moneybox->getFund();
+        return $this->fund;
     }
 
     public function getCurrency(): Currency

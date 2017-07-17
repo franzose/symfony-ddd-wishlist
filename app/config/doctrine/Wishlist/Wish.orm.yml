@@ -13,9 +13,14 @@ Wishlist\Domain\Wish:
         expense:
             class: Wishlist\Domain\Expense
             columnPrefix: false
-        moneybox:
-            class: Wishlist\Domain\Moneybox
-            columnPrefix: false
+    oneToMany:
+        deposits:
+            targetEntity: Wishlist\Domain\Deposit
+            mappedBy: wish
+            orphanRemoval: true
+            orderBy:
+                createdAt: DESC
+            cascade: [persist]
     fields:
         published:
             type: boolean
