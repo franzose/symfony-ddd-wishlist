@@ -2,6 +2,7 @@
 
 namespace Wishlist\Infrastructure\Persistence\Memory;
 
+use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\WishNotFoundException;
 use Wishlist\Domain\Wish;
 use Wishlist\Domain\WishId;
@@ -13,6 +14,8 @@ class WishRepository implements WishRepositoryInterface
 
     public function __construct(array $wishes = [])
     {
+        Assert::allIsInstanceOf($wishes, Wish::class);
+
         $this->wishes = $wishes;
     }
 

@@ -14,6 +14,17 @@ use PHPUnit\Framework\TestCase;
 class WishRepositoryTest extends TestCase
 {
     /**
+     * @expectedException \InvalidArgumentException
+     */
+    public function testConstructorShouldAcceptWishesOnly()
+    {
+        new WishRepository([
+            'foo',
+            'bar',
+        ]);
+    }
+
+    /**
      * @expectedException \Wishlist\Domain\Exception\WishNotFoundException
      */
     public function testGetShouldThrowOnNonExistentId()
