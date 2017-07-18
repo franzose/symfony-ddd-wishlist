@@ -15,6 +15,30 @@ use Wishlist\Domain\WishName;
 
 class WishTest extends TestCase
 {
+    public function testCreatedAndUpdatedAtMustBeEqualUponCreation()
+    {
+        $wish = $this->createWishWithEmptyFund();
+        $diff = $wish->getCreatedAt()->diff($wish->getUpdatedAt());
+
+        static::assertNotSame($wish->getCreatedAt(), $wish->getUpdatedAt());
+        static::assertTrue($diff->y === 0);
+        static::assertTrue($diff->m === 0);
+        static::assertTrue($diff->d === 0);
+        static::assertTrue($diff->h === 0);
+        static::assertTrue($diff->i === 0);
+        static::assertTrue($diff->s === 0);
+    }
+
+    public function testExtraDepositMustFulfillTheWish()
+    {
+        $wish = $this->createWishWithPriceAndFund(1000, 900);
+        $wish->publish();
+
+        $wish->deposit(new Money(150, new Currency('USD')));
+
+        static::assertTrue($wish->isFulfilled());
+    }
+
     /**
      * @param Wish $wish
      *
@@ -65,6 +89,17 @@ class WishTest extends TestCase
         $depositIdOne = $wish->deposit(new Money(100, new Currency('USD')));
 
         $wish->withdraw($depositIdOne);
+    }
+
+    /**
+     * @expectedException \Wishlist\Domain\Exception\DepositDoesNotExistException
+     */
+    public function testWithdrawMustThrowOnNonExistentId()
+    {
+        $wish = $this->createWishWithEmptyFund();
+        $wish->publish();
+
+        $wish->withdraw(DepositId::next());
     }
 
     /**
@@ -139,19 +174,71 @@ class WishTest extends TestCase
     public function testPublishShouldPublishTheWish()
     {
         $wish = $this->createWishWithEmptyFund();
+        $updatedAt = $wish->getUpdatedAt();
 
         $wish->publish();
 
         static::assertTrue($wish->isPublished());
+        static::assertNotSame($updatedAt, $wish->getUpdatedAt());
     }
 
     public function testUnpublishShouldUnpublishTheWish()
     {
         $wish = $this->createWishWithEmptyFund();
+        $updatedAt = $wish->getUpdatedAt();
 
         $wish->unpublish();
 
         static::assertFalse($wish->isPublished());
+        static::assertNotSame($updatedAt, $wish->getUpdatedAt());
+    }
+
+    public function testChangePrice()
+    {
+        $wish = $this->createWishWithPriceAndFee(1000, 10);
+        $expected = new Money(1500, new Currency('USD'));
+        $updatedAt = $wish->getUpdatedAt();
+
+        static::assertSame($updatedAt, $wish->getUpdatedAt());
+
+        $wish->changePrice($expected);
+
+        static::assertTrue($wish->getPrice()->equals($expected));
+        static::assertNotSame($updatedAt, $wish->getUpdatedAt());
+    }
+
+    public function testChangeFee()
+    {
+        $wish = $this->createWishWithPriceAndFee(1000, 10);
+        $expected = new Money(50, new Currency('USD'));
+        $updatedAt = $wish->getUpdatedAt();
+
+        static::assertSame($updatedAt, $wish->getUpdatedAt());
+
+        $wish->changeFee($expected);
+
+        static::assertTrue($wish->getFee()->equals($expected));
+        static::assertNotSame($updatedAt, $wish->getUpdatedAt());
+    }
+
+    public function testGetName()
+    {
+        $wish = $this->createWishWithName('foo');
+
+        static::assertEquals('foo', $wish->getName());
+    }
+
+    private function createWishWithName(string $name): Wish
+    {
+        return new Wish(
+            WishId::next(),
+            new WishName($name),
+            Expense::fromCurrencyAndScalars(
+                new Currency('USD'),
+                1000,
+                100
+            )
+        );
     }
 
     private function createWishWithEmptyFund(): Wish

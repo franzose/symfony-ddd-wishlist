@@ -137,11 +137,13 @@ class Wish
     public function publish()
     {
         $this->published = true;
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function unpublish()
     {
         $this->published = false;
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function isPublished(): bool
@@ -164,9 +166,21 @@ class Wish
         return $this->expense->getPrice();
     }
 
+    public function changePrice(Money $amount)
+    {
+        $this->expense = $this->expense->changePrice($amount);
+        $this->updatedAt = new DateTimeImmutable();
+    }
+
     public function getFee(): Money
     {
         return $this->expense->getFee();
+    }
+
+    public function changeFee(Money $amount)
+    {
+        $this->expense = $this->expense->changeFee($amount);
+        $this->updatedAt = new DateTimeImmutable();
     }
 
     public function getFund(): Money
