@@ -102,6 +102,29 @@ class WishTest extends TestCase
         $wish->withdraw(DepositId::next());
     }
 
+    public function testDepositShouldAddDepositToInternalCollection()
+    {
+        $wish = $this->createWishWithEmptyFund();
+        $wish->publish();
+        $depositMoney = new Money(150, new Currency('USD'));
+
+        $wish->deposit($depositMoney);
+
+        static::assertCount(1, $wish->getDeposits());
+        static::assertTrue($wish->getDeposits()[0]->getMoney()->equals($depositMoney));
+    }
+
+    public function testWithdrawShouldRemoveDepositFromInternalCollection()
+    {
+        $wish = $this->createWishWithEmptyFund();
+        $wish->publish();
+        $wish->deposit(new Money(150, new Currency('USD')));
+
+        $wish->withdraw($wish->getDeposits()[0]->getId());
+
+        static::assertCount(0, $wish->getDeposits());
+    }
+
     /**
      * @expectedException \InvalidArgumentException
      */

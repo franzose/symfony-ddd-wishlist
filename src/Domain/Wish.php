@@ -190,6 +190,14 @@ class Wish
         }, $this->expense->getInitialFund());
     }
 
+    /**
+     * @return array|Deposit[]
+     */
+    public function getDeposits(): array
+    {
+        return $this->deposits->toArray();
+    }
+
     public function getCurrency(): Currency
     {
         return $this->expense->getCurrency();
