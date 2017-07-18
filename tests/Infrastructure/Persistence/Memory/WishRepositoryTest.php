@@ -78,6 +78,16 @@ class WishRepositoryTest extends TestCase
         static::assertFalse($repository->hasWishWithId($anotherWish->getId()));
     }
 
+    public function testNextWishIdMustAlwaysBeUnique()
+    {
+        $repository = new WishRepository();
+        $wishIdOne = $repository->getNextWishId();
+        $wishIdTwo = $repository->getNextWishId();
+
+        static::assertNotSame($wishIdOne, $wishIdTwo);
+        static::assertFalse($wishIdOne->equalTo($wishIdTwo));
+    }
+
     private function createWishesIndexedByNumber(WishRepositoryInterface $repository, int $number)
     {
         $wishes = [];
