@@ -68,13 +68,13 @@ class Wishlist implements WishlistInterface
         return $depositId->getId();
     }
 
-    public function withdraw(string $wishId, string $depositId, callable $formatter): string
+    public function withdraw(string $wishId, string $depositId): Money
     {
         $wish = $this->getWish($wishId);
         $wish->withdraw(DepositId::fromString($depositId));
         $this->wishes->put($wish);
 
-        return $formatter($wish->getFund());
+        return $wish->getFund();
     }
 
     public function publish(string $wishId)

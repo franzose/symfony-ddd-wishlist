@@ -95,13 +95,11 @@ class WishlistTest extends TestCase
         $wishId = $this->wishIds[0]->getId();
         $depositId = $wishlist->deposit($wishId, 25);
 
-        $amount = $wishlist->withdraw($wishId, $depositId, function (Money $fund) {
-            return $fund->getAmount();
-        });
+        $amount = $wishlist->withdraw($wishId, $depositId);
 
         static::assertSame($repositoryCapacity, $repository->count());
-        static::assertEquals($amount, $repository->get($this->wishIds[0])->getFund()->getAmount());
-        static::assertEquals(10, $amount);
+        static::assertTrue($amount->equals($repository->get($this->wishIds[0])->getFund()));
+        static::assertEquals(10, $amount->getAmount());
     }
 
     public function testUnpublish()
