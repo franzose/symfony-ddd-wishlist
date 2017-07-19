@@ -21,7 +21,7 @@ class WishRepository implements WishRepositoryInterface
 
     public function get(WishId $wishId): Wish
     {
-        if (!$this->hasWishWithId($wishId)) {
+        if (!$this->containsId($wishId)) {
             throw new WishNotFoundException($wishId);
         }
 
@@ -38,14 +38,16 @@ class WishRepository implements WishRepositoryInterface
         return array_slice($this->wishes, $offset, $limit, true);
     }
 
-    public function has(Wish $wish): bool
+    public function contains(Wish $wish): bool
     {
-        return $this->hasWishWithId($wish->getId());
+        return in_array($wish, $this->wishes, true);
     }
 
-    public function hasWishWithId(WishId $wishId): bool
+    public function containsId(WishId $wishId): bool
     {
-        return array_key_exists($wishId->getId(), $this->wishes);
+        return 1 === count(array_filter($this->wishes, function (Wish $wish) use ($wishId) {
+            return $wish->getId() === $wishId;
+        }));
     }
 
     public function count(): int

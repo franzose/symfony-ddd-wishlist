@@ -70,12 +70,12 @@ class WishRepositoryTest extends TestCase
         $wishes = $this->createWishesIndexedByNumber($repository, 2);
         $anotherWish = $this->createWish();
 
-        static::assertTrue($repository->has($wishes[0]));
-        static::assertTrue($repository->has($wishes[1]));
-        static::assertTrue($repository->hasWishWithId($wishes[0]->getId()));
-        static::assertTrue($repository->hasWishWithId($wishes[1]->getId()));
-        static::assertFalse($repository->has($anotherWish));
-        static::assertFalse($repository->hasWishWithId($anotherWish->getId()));
+        static::assertTrue($repository->contains($wishes[0]));
+        static::assertTrue($repository->contains($wishes[1]));
+        static::assertTrue($repository->containsId($wishes[0]->getId()));
+        static::assertTrue($repository->containsId($wishes[1]->getId()));
+        static::assertFalse($repository->contains($anotherWish));
+        static::assertFalse($repository->containsId($anotherWish->getId()));
     }
 
     public function testNextWishIdMustAlwaysBeUnique()
