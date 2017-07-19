@@ -46,7 +46,7 @@ class WishRepository implements WishRepositoryInterface
     public function containsId(WishId $wishId): bool
     {
         return 1 === count(array_filter($this->wishes, function (Wish $wish) use ($wishId) {
-            return $wish->getId() === $wishId;
+            return $wish->getId()->equalTo($wishId);
         }));
     }
 
