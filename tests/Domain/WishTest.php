@@ -110,8 +110,13 @@ class WishTest extends TestCase
 
         $wish->deposit($depositMoney);
 
-        static::assertCount(1, $wish->getDeposits());
-        static::assertTrue($wish->getDeposits()[0]->getMoney()->equals($depositMoney));
+        $deposits = $wish->getDeposits();
+        static::assertCount(1, $deposits);
+        static::assertArrayHasKey(0, $deposits);
+
+        $deposit = $deposits[0];
+        static::assertTrue($deposit->getMoney()->equals($depositMoney));
+        static::assertSame($wish, $deposit->getWish());
     }
 
     public function testWithdrawShouldRemoveDepositFromInternalCollection()
