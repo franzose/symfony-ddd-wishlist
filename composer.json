@@ -38,6 +38,7 @@
     },
     "require-dev": {
         "doctrine/doctrine-fixtures-bundle": "^2.3",
+        "fzaninotto/faker": "^1.6",
         "liip/functional-test-bundle": "^1.8",
         "mockery/mockery": "^0.9.9",
         "phpunit/phpunit": "^6.2",
