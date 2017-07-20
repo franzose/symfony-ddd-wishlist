@@ -2,12 +2,14 @@
 <html>
     <head>
         <meta charset="UTF-8" />
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        <title>{% block title %}Welcome!{% endblock %} • Wishlist</title>
+        <link rel="stylesheet" href="{{ asset('assets/styles.css') }}">
         <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
-        {% block javascripts %}{% endblock %}
+        <div class="layout">
+            {% block body %}{% endblock %}
+        </div>
+        <script src="{{ asset('assets/app.js') }}"></script>
     </body>
 </html>

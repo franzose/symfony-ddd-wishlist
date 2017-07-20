@@ -16,11 +16,9 @@ web_profiler:
 swiftmailer:
     disable_delivery: true
 
+liip_functional_test: ~
+
 doctrine:
     dbal:
-        default_connection: testing_connection
-        connections:
-            testing_connection:
-                driver: pdo_sqlite
-                memory: true
-                path: ":memory:"
+        driver: pdo_sqlite
+        path: "%kernel.cache_dir%/test.db"
