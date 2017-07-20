@@ -37,6 +37,7 @@
         "webmozart/assert": "^1.2"
     },
     "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^2.3",
         "mockery/mockery": "^0.9.9",
         "phpunit/phpunit": "^6.2",
         "sensio/generator-bundle": "^3.0",

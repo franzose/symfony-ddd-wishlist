@@ -1,5 +1,6 @@
 imports:
     - { resource: config_dev.yml }
+    - { resource: services_test.yml }
 
 framework:
     test: ~
@@ -14,3 +15,12 @@ web_profiler:
 
 swiftmailer:
     disable_delivery: true
+
+doctrine:
+    dbal:
+        default_connection: testing_connection
+        connections:
+            testing_connection:
+                driver: pdo_sqlite
+                memory: true
+                path: ":memory:"
