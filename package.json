@@ -1,0 +1,26 @@
+{
+  "name": "wishlist",
+  "version": "1.0.0",
+  "description": "Wishlist DDD app",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "wishlist",
+    "ddd",
+    "symfony"
+  ],
+  "author": "Jan Iwanow <iwanow.jan@gmail.com> (http://janiwanow.com)",
+  "license": "MIT",
+  "dependencies": {
+    "@symfony/webpack-encore": "^0.10.0"
+  },
+  "devDependencies": {
+    "node-sass": "^4.5.3",
+    "sass-loader": "^6.0.6"
+  }
+}

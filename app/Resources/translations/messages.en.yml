@@ -1,0 +1,8 @@
+wishlist:
+    search_form:
+        input_placeholder: Wish name here
+        button_label: Search
+    table:
+        title: Wishlist
+        of: of
+        total: total

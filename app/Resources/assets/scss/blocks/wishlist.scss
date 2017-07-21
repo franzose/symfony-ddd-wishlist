@@ -1,0 +1,45 @@
+.wishlist {
+    max-width: 35rem;
+    margin: 3rem auto;
+    border-collapse: collapse;
+
+    &__title {
+        margin-bottom: .25rem;
+        text-align: left;
+        text-indent: .45rem;
+        font-variant: small-caps;
+        text-transform: lowercase;
+        letter-spacing: .125rem;
+        font-weight: 500;
+    }
+
+    &__title-wrapper {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &__current-page {
+        position: relative;
+        top: -.125rem;
+        font-size: .65rem;
+        color: #777;
+    }
+
+    &__muted {
+        font-size: .75rem;
+        color: #777;
+    }
+
+    &__name {
+        min-width: 5rem;
+    }
+
+    tr:not(:last-child) {
+        border-bottom: 1px solid #eee;
+    }
+
+    td {
+        padding: .125rem .5rem;
+    }
+}

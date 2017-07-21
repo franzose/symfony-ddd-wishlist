@@ -1,0 +1,29 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <table class="wishlist js-wishlist">
+        <caption class="wishlist__title">
+            <div class="wishlist__title-wrapper">
+                <div class="wishlist__title-text">
+                    {{ 'wishlist.table.title'|trans }}
+                </div>
+                <div class="wishlist__current-page">
+                    {{ startIndex }}-{{ endIndex }}
+                    {{ 'wishlist.table.of'|trans }}
+                    {{ total }}
+                    {{ 'wishlist.table.total'|trans }}
+                </div>
+            </div>
+        </caption>
+        <tbody>
+        {% for wish in wishes %}
+            <tr class="wishlist__wish{% if not wish.isPublished %} wishlist__wish--unpublished{% endif %} js-wish" data-id="{{ wish.id }}">
+                <td class="wishlist__muted">{{ wish.createdAt }}</td>
+                <td class="wishlist__name">{{ wish.name }}</td>
+                <td>{{ wish.fund }} {{ 'wishlist.table.of'|trans }} {{ wish.price }}</td>
+                <td class="wishlist__muted">$</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

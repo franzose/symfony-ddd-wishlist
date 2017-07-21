@@ -20,5 +20,6 @@
 /bower_components/
 /node_modules/
 /vendor/
+/web/assets/
 /web/bundles/
 docker-compose.yml
