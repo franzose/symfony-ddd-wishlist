@@ -24,14 +24,18 @@ class Wish
     private $createdAt;
     private $updatedAt;
 
-    public function __construct(WishId $id, WishName $name, Expense $expense)
-    {
+    public function __construct(
+        WishId $id,
+        WishName $name,
+        Expense $expense,
+        DateTimeImmutable $createdAt = null
+    ) {
         $this->id = $id;
         $this->name = $name;
         $this->expense = $expense;
         $this->deposits = new ArrayCollection();
-        $this->createdAt = new DateTimeImmutable();
-        $this->updatedAt = new DateTimeImmutable();
+        $this->createdAt = $createdAt ?? new DateTimeImmutable();
+        $this->updatedAt = $createdAt ?? new DateTimeImmutable();
     }
 
     public function deposit(Money $amount): DepositId
