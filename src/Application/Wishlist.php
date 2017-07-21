@@ -95,4 +95,9 @@ class Wishlist implements WishlistInterface
     {
         return $this->wishes->get(WishId::fromString($wishId));
     }
+
+    public function getTotalWishesNumber(): int
+    {
+        return $this->wishes->count();
+    }
 }

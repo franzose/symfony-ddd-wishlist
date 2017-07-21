@@ -13,4 +13,5 @@ interface WishlistInterface
     public function publish(string $wishId);
     public function unpublish(string $wishId);
     public function getWishesByPage(int $page, int $limit): array;
+    public function getTotalWishesNumber(): int;
 }
