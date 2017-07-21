@@ -21,7 +21,21 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    # add more services, or override services that need manual wiring
-    # AppBundle\Service\ExampleService:
-    #     arguments:
-    #         $someArgument: 'some_value'
+    wishlist.wish.repository:
+        class: Wishlist\Infrastructure\Persistence\Doctrine\WishRepository
+        autowire: true
+        public: false
+
+    wishlist.currency.factory:
+        class: Wishlist\Infrastructure\Currency\DefaultCurrencyFactory
+        public: true
+        factory: [Wishlist\Infrastructure\Currency\DefaultCurrencyFactory, createCurrency]
+        arguments:
+            - '%default_currency_code%'
+
+    Wishlist\Application\WishlistInterface:
+        class: Wishlist\Application\Wishlist
+        public: false
+        arguments:
+            - '@wishlist.wish.repository'
+            - "@=service('wishlist.currency.factory')"
