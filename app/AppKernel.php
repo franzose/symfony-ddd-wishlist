@@ -29,10 +29,8 @@ class AppKernel extends Kernel
                 $bundles[] = new Symfony\Bundle\WebServerBundle\WebServerBundle();
             }
 
-            if ('test' === $env) {
-                $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
-                $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
-            }
+            $bundles[] = new Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+            $bundles[] = new Liip\FunctionalTestBundle\LiipFunctionalTestBundle();
         }
 
         return $bundles;
