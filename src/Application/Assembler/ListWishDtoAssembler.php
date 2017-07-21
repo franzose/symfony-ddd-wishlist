@@ -16,6 +16,7 @@ class ListWishDtoAssembler
     {
         return array_map(function (Wish $wish) {
             $dto = new ListWishDto();
+            $dto->id = $wish->getId()->getId();
             $dto->name = $wish->getName();
             $dto->fund = $wish->getFund()->getAmount();
             $dto->price = $wish->getPrice()->getAmount();
