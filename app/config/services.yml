@@ -21,10 +21,17 @@ services:
         public: true
         tags: ['controller.service_arguments']
 
-    wishlist.wish.repository:
+    Wishlist\Domain\WishRepositoryInterface:
         class: Wishlist\Infrastructure\Persistence\Doctrine\WishRepository
         autowire: true
         public: false
+
+    wishlist.wish.repository:
+        class: Wishlist\Infrastructure\Persistence\Doctrine\CachingWishRepository
+        public: false
+        arguments:
+            - '@Wishlist\Domain\WishRepositoryInterface'
+            - '@cache.app'
 
     wishlist.currency.factory:
         class: Wishlist\Infrastructure\Currency\DefaultCurrencyFactory

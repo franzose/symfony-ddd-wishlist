@@ -33,6 +33,10 @@ framework:
     assets: ~
     php_errors:
         log: true
+    cache:
+        app: cache.adapter.redis
+        default_psr6_provider: cache.adapter.redis
+        default_redis_provider: redis://localhost:4600
 
 # Twig Configuration
 twig:
@@ -57,6 +61,8 @@ doctrine:
         auto_generate_proxy_classes: '%kernel.debug%'
         naming_strategy: doctrine.orm.naming_strategy.underscore
         auto_mapping: true
+        second_level_cache:
+            enabled: true
         mappings:
             Money:
                 type: yml

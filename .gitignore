@@ -2,8 +2,6 @@
 /.web-server-pid
 /app/config/parameters.yml
 /app/config/parameters_permanent.yml
-/app/config/services_dev.yml
-/app/config/services_test.yml
 /build/
 /phpunit.xml
 /var/*

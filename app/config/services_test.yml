@@ -1,0 +1,5 @@
+services:
+    wishlist.wish.repository:
+        class: Wishlist\Infrastructure\Persistence\Doctrine\WishRepository
+        autowire: true
+        public: false
