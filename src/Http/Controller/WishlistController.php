@@ -5,23 +5,19 @@ namespace Wishlist\Http\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Wishlist\Application\WishlistInterface;
 
 class WishlistController
 {
     private $engine;
     private $wishlist;
-    private $validator;
 
     public function __construct(
         EngineInterface $engine,
-        WishlistInterface $wishlist,
-        ValidatorInterface $validator
+        WishlistInterface $wishlist
     ) {
         $this->engine = $engine;
         $this->wishlist = $wishlist;
-        $this->validator = $validator;
     }
 
     /**
@@ -32,7 +28,7 @@ class WishlistController
      */
     public function indexAction(Request $request)
     {
-        $page = $request->query->getInt('page', 0);
+        $page = $request->query->getInt('page', 1) - 1;
         $limit = $request->query->getInt('limit', 10);
         $startIndex = $page * $limit + 1;
         $endIndex = $startIndex + $limit - 1;

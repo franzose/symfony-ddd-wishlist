@@ -25,11 +25,14 @@ class WishlistControllerTest extends WebTestCase
         $this->fixtures = $executor->getReferenceRepository()->getReferences();
     }
 
-    public function testIndexActionShouldShowLatest10Wishes()
+    /**
+     * @dataProvider queryParametersDataProvider
+     */
+    public function testIndexActionShouldShowLatest10Wishes(array $parameters)
     {
         $client = $this->makeClient();
 
-        $crawler = $client->request('GET', '/wishes');
+        $crawler = $client->request('GET', '/wishes', $parameters);
 
         $this->assertStatusCode(200, $client);
         $this->assertThereIsOnlyOneWishlist($crawler);
@@ -38,6 +41,14 @@ class WishlistControllerTest extends WebTestCase
 
         static::assertEquals(10, $wishElements->count());
         $this->assertOrderedByDate($wishElements->extract(['data-id']));
+    }
+
+    public function queryParametersDataProvider()
+    {
+        return [
+            'Should show latest 10 wishes' => [[]],
+            'Should also show the same (latest) 10 wishes' => [['page' => 1]]
+        ];
     }
 
     private function getFixtureWishIds(int $offset = null, int $limit = null): array
