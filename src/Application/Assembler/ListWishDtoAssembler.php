@@ -22,6 +22,7 @@ class ListWishDtoAssembler
             $dto->price = $wish->getPrice()->getAmount();
             $dto->createdAt = $wish->getCreatedAt()->format('d.m');
             $dto->isPublished = $wish->isPublished();
+            $dto->currency = $wish->getCurrency()->getCode();
 
             return $dto;
         }, $wishes);

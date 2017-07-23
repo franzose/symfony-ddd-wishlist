@@ -10,4 +10,5 @@ class ListWishDto
     public $fund;
     public $createdAt;
     public $isPublished;
+    public $currency;
 }

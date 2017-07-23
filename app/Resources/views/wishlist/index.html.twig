@@ -21,7 +21,7 @@
                 <td class="wishlist__muted">{{ wish.createdAt }}</td>
                 <td class="wishlist__name">{{ wish.name }}</td>
                 <td>{{ wish.fund }} {{ 'wishlist.table.of'|trans }} {{ wish.price }}</td>
-                <td class="wishlist__muted">$</td>
+                <td class="wishlist__muted">{{ wish.currency }}</td>
             </tr>
         {% endfor %}
         </tbody>
