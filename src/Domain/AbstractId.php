@@ -2,8 +2,10 @@
 
 namespace Wishlist\Domain;
 
+use Ramsey\Uuid\Exception\InvalidUuidStringException;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
+use Wishlist\Domain\Exception\InvalidIdentityException;
 
 abstract class AbstractId
 {
@@ -16,7 +18,11 @@ abstract class AbstractId
 
     public static function fromString(string $id)
     {
-        return new static(Uuid::fromString($id));
+        try {
+            return new static(Uuid::fromString($id));
+        } catch (InvalidUuidStringException $exception) {
+            throw new InvalidIdentityException($id);
+        }
     }
 
     public static function next()

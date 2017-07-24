@@ -3,12 +3,11 @@
 namespace Wishlist\Domain\Exception;
 
 use Exception;
-use Wishlist\Domain\WishId;
 
 class WishNotFoundException extends Exception
 {
-    public function __construct(WishId $wishId)
+    public function __construct($wishId)
     {
-        parent::__construct('Wish not found. ID: ' . $wishId);
+        parent::__construct('Wish not found. ID: ' . (string) $wishId);
     }
 }
