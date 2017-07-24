@@ -13,7 +13,7 @@ final class CacheOptions
     public function __construct(string $key, int $lifetime, array $tags = [])
     {
         Assert::notEmpty($key);
-        Assert::greaterThanEq(0, $lifetime);
+        Assert::greaterThanEq($lifetime, 0);
 
         if (!empty($tags)) {
             Assert::allStringNotEmpty($tags);
