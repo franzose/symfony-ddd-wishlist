@@ -10,7 +10,6 @@ final class CacheOptions
 
     public function __construct(string $key, int $lifetime, array $tags = [])
     {
-
         $this->key = $key;
         $this->lifetime = $lifetime;
         $this->tags = $tags;
