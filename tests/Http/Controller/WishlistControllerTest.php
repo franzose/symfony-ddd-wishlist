@@ -2,6 +2,7 @@
 
 namespace Wishlist\Tests\Http\Controller;
 
+use Doctrine\Common\DataFixtures\ReferenceRepository;
 use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -17,6 +18,11 @@ class WishlistControllerTest extends WebTestCase
      * @var array|Wish[]
      */
     private $fixtures;
+
+    /**
+     * @var ReferenceRepository
+     */
+    private $references;
 
     /**
      * @var RouterInterface
@@ -36,7 +42,8 @@ class WishlistControllerTest extends WebTestCase
             LoadWishesData::class,
         ]);
 
-        $this->fixtures = $executor->getReferenceRepository()->getReferences();
+        $this->references = $executor->getReferenceRepository();
+        $this->fixtures = $this->references->getReferences();
 
         $container = $this->getContainer();
         $this->router = $container->get('router');
@@ -110,7 +117,8 @@ class WishlistControllerTest extends WebTestCase
     public function testPublishShouldPublishTheWish()
     {
         $client = $this->makeClient();
-        $wishId = $this->fixtures['wish-0']->getId()->getId();
+        $fixtureKey = 'wish-unpublished';
+        $wishId = $this->fixtures[$fixtureKey]->getId()->getId();
 
         $this->sendPublishRequest($client, $wishId);
 
@@ -123,6 +131,8 @@ class WishlistControllerTest extends WebTestCase
             ],
             $this->parseJson($client)
         );
+
+        static::assertTrue($this->getFixtureReference($fixtureKey)->isPublished());
     }
 
     public function testUnpublishShouldReturn404IfWishDoesNotExist()
@@ -137,7 +147,8 @@ class WishlistControllerTest extends WebTestCase
     public function testUnpublishShouldUnpublishTheWish()
     {
         $client = $this->makeClient();
-        $wishId = $this->fixtures['wish-0']->getId()->getId();
+        $fixtureKey = 'wish-0';
+        $wishId = $this->fixtures[$fixtureKey]->getId()->getId();
 
         $this->sendUnpublishRequest($client, $wishId);
 
@@ -150,6 +161,8 @@ class WishlistControllerTest extends WebTestCase
             ],
             $this->parseJson($client)
         );
+
+        static::assertFalse($this->getFixtureReference($fixtureKey)->isPublished());
     }
 
     private function sendPublishRequest(Client $client, string $wishId): void
@@ -182,5 +195,15 @@ class WishlistControllerTest extends WebTestCase
     private function parseJson(Client $client)
     {
         return json_decode($client->getResponse()->getContent(), true);
+    }
+
+    /**
+     * @param string $name
+     *
+     * @return object|Wish
+     */
+    private function getFixtureReference(string $name): Wish
+    {
+        return $this->references->getReference($name);
     }
 }

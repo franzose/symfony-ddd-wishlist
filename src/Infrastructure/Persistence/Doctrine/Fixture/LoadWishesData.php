@@ -49,6 +49,38 @@ class LoadWishesData extends AbstractFixture implements OrderedFixtureInterface
 
             $this->addReference("wish-{$wishIndex}", $wish);
         }
+
+        $unpublishedWish = new Wish(
+            WishId::next(),
+            new WishName($faker->sentence(3)),
+            Expense::fromCurrencyAndScalars(
+                $currency,
+                $faker->numberBetween(10000, 50000),
+                $faker->numberBetween(10, 50),
+                $faker->numberBetween(0, 50)
+            ),
+            new DateTimeImmutable('now - 1 day')
+        );
+
+        $manager->persist($unpublishedWish);
+        $manager->flush();
+        $this->addReference('wish-unpublished', $unpublishedWish);
+
+        $almostFulfilledWish = new Wish(
+            WishId::next(),
+            new WishName($faker->sentence(3)),
+            Expense::fromCurrencyAndScalars(
+                $currency,
+                45000,
+                100,
+                44900
+            ),
+            new DateTimeImmutable('now - 2 days')
+        );
+
+        $manager->persist($almostFulfilledWish);
+        $manager->flush();
+        $this->addReference('wish-almost-fulfilled', $almostFulfilledWish);
     }
 
     /**
