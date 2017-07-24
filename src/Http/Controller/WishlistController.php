@@ -69,7 +69,8 @@ class WishlistController
 
         return new JsonResponse([
             'url' => $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
-            'label' => $this->translator->trans('wishlist.table.unpublish')
+            'label' => $this->translator->trans('wishlist.table.unpublish'),
+            'published' => true
         ]);
     }
 
@@ -85,7 +86,8 @@ class WishlistController
 
         return new JsonResponse([
             'url' => $this->router->generate('wishlist.wish.publish', compact('wishId')),
-            'label' => $this->translator->trans('wishlist.table.publish')
+            'label' => $this->translator->trans('wishlist.table.publish'),
+            'published' => false
         ]);
     }
 }

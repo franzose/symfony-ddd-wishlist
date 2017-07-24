@@ -127,7 +127,8 @@ class WishlistControllerTest extends WebTestCase
         static::assertEquals(
             [
                 'url' => $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
-                'label' => $this->translator->trans('wishlist.table.unpublish')
+                'label' => $this->translator->trans('wishlist.table.unpublish'),
+                'published' => true
             ],
             $this->parseJson($client)
         );
@@ -157,7 +158,8 @@ class WishlistControllerTest extends WebTestCase
         static::assertEquals(
             [
                 'url' => $this->router->generate('wishlist.wish.publish', compact('wishId')),
-                'label' => $this->translator->trans('wishlist.table.publish')
+                'label' => $this->translator->trans('wishlist.table.publish'),
+                'published' => false
             ],
             $this->parseJson($client)
         );
