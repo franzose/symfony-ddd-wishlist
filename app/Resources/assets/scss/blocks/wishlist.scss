@@ -35,8 +35,14 @@
         min-width: 5rem;
     }
 
-    tr:not(:last-child) {
-        border-bottom: 1px solid #eee;
+    &__wish {
+        &--unpublished {
+            color: #bbb;
+        }
+
+        &:not(:last-child) {
+            border-bottom: 1px solid #eee;
+        }
     }
 
     td {
