@@ -45,6 +45,23 @@
         }
     }
 
+    &__publish-button {
+        padding: 0 .25rem;
+        font-size: .75rem;
+        font-family: inherit;
+        color: #333;
+        border: 0;
+        border-radius: 2px;
+        background: #ffd121;
+        cursor: pointer;
+        outline: none;
+    }
+
+    &__wish--unpublished &__publish-button {
+        color: #fff;
+        background: #00a5f2;
+    }
+
     td {
         padding: .125rem .5rem;
     }
