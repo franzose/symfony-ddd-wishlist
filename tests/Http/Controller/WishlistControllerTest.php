@@ -3,7 +3,11 @@
 namespace Wishlist\Tests\Http\Controller;
 
 use Liip\FunctionalTestBundle\Test\WebTestCase;
+use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\DomCrawler\Crawler;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Wishlist\Domain\Wish;
 use Wishlist\Infrastructure\Persistence\Doctrine\Fixture\LoadWishesData;
 
@@ -14,6 +18,16 @@ class WishlistControllerTest extends WebTestCase
      */
     private $fixtures;
 
+    /**
+     * @var RouterInterface
+     */
+    private $router;
+
+    /**
+     * @var TranslatorInterface
+     */
+    private $translator;
+
     public function setUp()
     {
         parent::setUp();
@@ -23,6 +37,10 @@ class WishlistControllerTest extends WebTestCase
         ]);
 
         $this->fixtures = $executor->getReferenceRepository()->getReferences();
+
+        $container = $this->getContainer();
+        $this->router = $container->get('router');
+        $this->translator = $container->get('translator');
     }
 
     /**
@@ -78,5 +96,91 @@ class WishlistControllerTest extends WebTestCase
     private function assertThereIsOnlyOneWishlist(Crawler $crawler): void
     {
         static::assertEquals(1, $crawler->filter('.js-wishlist')->count());
+    }
+
+    public function testPublishShouldReturn404IfWishDoesNotExist()
+    {
+        $client = $this->makeClient();
+
+        $this->sendPublishRequest($client, 'nonsense');
+
+        $this->assertStatusCode(404, $client);
+    }
+
+    public function testPublishShouldPublishTheWish()
+    {
+        $client = $this->makeClient();
+        $wishId = $this->fixtures['wish-0']->getId()->getId();
+
+        $this->sendPublishRequest($client, $wishId);
+
+        $this->assertStatusCode(200, $client);
+        static::assertInstanceOf(JsonResponse::class, $client->getResponse());
+        static::assertEquals(
+            [
+                'url' => $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
+                'label' => $this->translator->trans('wishlist.table.unpublish')
+            ],
+            $this->parseJson($client)
+        );
+    }
+
+    public function testUnpublishShouldReturn404IfWishDoesNotExist()
+    {
+        $client = $this->makeClient();
+
+        $this->sendUnpublishRequest($client, 'nonsense');
+
+        $this->assertStatusCode(404, $client);
+    }
+
+    public function testUnpublishShouldUnpublishTheWish()
+    {
+        $client = $this->makeClient();
+        $wishId = $this->fixtures['wish-0']->getId()->getId();
+
+        $this->sendUnpublishRequest($client, $wishId);
+
+        $this->assertStatusCode(200, $client);
+        static::assertInstanceOf(JsonResponse::class, $client->getResponse());
+        static::assertEquals(
+            [
+                'url' => $this->router->generate('wishlist.wish.publish', compact('wishId')),
+                'label' => $this->translator->trans('wishlist.table.publish')
+            ],
+            $this->parseJson($client)
+        );
+    }
+
+    private function sendPublishRequest(Client $client, string $wishId): void
+    {
+        $client->request(
+            'PUT',
+            $this->router->generate('wishlist.wish.publish', compact('wishId')),
+            [],
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest',]
+        );
+    }
+
+    private function sendUnpublishRequest(Client $client, string $wishId): void
+    {
+        $client->request(
+            'PUT',
+            $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
+            [],
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest',]
+        );
+    }
+
+    /**
+     * @param $client
+     *
+     * @return mixed
+     */
+    private function parseJson(Client $client)
+    {
+        return json_decode($client->getResponse()->getContent(), true);
     }
 }

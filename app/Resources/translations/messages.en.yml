@@ -6,3 +6,5 @@ wishlist:
         title: Wishlist
         of: of
         total: total
+        publish: Publish
+        unpublish: Unpublish

@@ -4,19 +4,28 @@ namespace Wishlist\Http\Controller;
 
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 use Wishlist\Application\WishlistInterface;
 
 class WishlistController
 {
     private $engine;
+    private $router;
+    private $translator;
     private $wishlist;
 
     public function __construct(
         EngineInterface $engine,
+        RouterInterface $router,
+        TranslatorInterface $translator,
         WishlistInterface $wishlist
     ) {
         $this->engine = $engine;
+        $this->router = $router;
+        $this->translator = $translator;
         $this->wishlist = $wishlist;
     }
 
@@ -46,5 +55,37 @@ class WishlistController
                 'endIndex'
             )
         );
+    }
+
+    /**
+     * @Route("/wishes/{wishId}/publish", name="wishlist.wish.publish", methods={"PUT"})
+     * @param string $wishId
+     *
+     * @return JsonResponse
+     */
+    public function publishAction(string $wishId)
+    {
+        $this->wishlist->publish($wishId);
+
+        return new JsonResponse([
+            'url' => $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
+            'label' => $this->translator->trans('wishlist.table.unpublish')
+        ]);
+    }
+
+    /**
+     * @Route("/wishes/{wishId}/unpublish", name="wishlist.wish.unpublish", methods={"PUT"})
+     * @param string $wishId
+     *
+     * @return JsonResponse
+     */
+    public function unpublishAction(string $wishId)
+    {
+        $this->wishlist->unpublish($wishId);
+
+        return new JsonResponse([
+            'url' => $this->router->generate('wishlist.wish.publish', compact('wishId')),
+            'label' => $this->translator->trans('wishlist.table.publish')
+        ]);
     }
 }
