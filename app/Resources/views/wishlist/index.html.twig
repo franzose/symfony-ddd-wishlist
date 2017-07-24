@@ -7,11 +7,24 @@
                 <div class="wishlist__title-text">
                     {{ 'wishlist.table.title'|trans }}
                 </div>
-                <div class="wishlist__current-page">
+                <div class="wishlist__pagination pagination">
+                    {% set page = page + 1 %}
+                    {% if (page > 1) %}
+                        <a href="{{ url('wishlist.index', { page: page - 1 }) }}"
+                           class="pagination__link pagination__link--prev">
+                            <svg class="pagination__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path transform="scale(-1,1) translate(-24,0)" d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"></path></svg>
+                        </a>
+                    {% endif %}
                     {{ startIndex }}-{{ endIndex }}
                     {{ 'wishlist.table.of'|trans }}
                     {{ total }}
                     {{ 'wishlist.table.total'|trans }}
+                    {% if (endIndex < total) %}
+                        <a href="{{ url('wishlist.index', { page: page + 1 }) }}"
+                           class="pagination__link pagination__link--next">
+                            <svg class="pagination__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"ß></path></svg>
+                        </a>
+                    {% endif %}
                 </div>
             </div>
         </caption>

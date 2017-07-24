@@ -41,6 +41,7 @@ class WishlistController
             compact(
                 'wishes',
                 'total',
+                'page',
                 'startIndex',
                 'endIndex'
             )

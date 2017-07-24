@@ -1,0 +1,27 @@
+.pagination {
+    &__link {
+        display: inline-block;
+        position: relative;
+        top: .35rem;
+        width: 24px;
+        height: 24px;
+        font-family: monospace;
+        font-size: 1.25rem;
+        line-height: 0;
+        text-decoration: none;
+        color: #8ac249;
+        text-shadow: 0 1px 0 #5a8c21;
+
+        &--prev {
+            margin-right: 1rem;
+        }
+
+        &--next {
+            margin-left: 1rem;
+        }
+    }
+
+    &__icon {
+        margin-left: -.5rem;
+    }
+}
