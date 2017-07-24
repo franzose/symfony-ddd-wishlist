@@ -1,6 +1,6 @@
 <?php
 
-namespace Wishlist\Infrastructure\Persistence\Doctrine;
+namespace Wishlist\Infrastructure\Persistence\Common;
 
 use Closure;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;

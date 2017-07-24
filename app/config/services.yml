@@ -31,7 +31,7 @@ services:
             - '@cache.app'
 
     wishlist.wish.repository:
-        class: Wishlist\Infrastructure\Persistence\Doctrine\CachingWishRepository
+        class: Wishlist\Infrastructure\Persistence\Common\CachingWishRepository
         arguments:
             - '@Wishlist\Domain\WishRepositoryInterface'
             - '@Symfony\Component\Cache\Adapter\TagAwareAdapterInterface'
