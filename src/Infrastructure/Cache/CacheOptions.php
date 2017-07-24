@@ -2,6 +2,8 @@
 
 namespace Wishlist\Infrastructure\Cache;
 
+use Webmozart\Assert\Assert;
+
 final class CacheOptions
 {
     private $key;
@@ -10,6 +12,13 @@ final class CacheOptions
 
     public function __construct(string $key, int $lifetime, array $tags = [])
     {
+        Assert::notEmpty($key);
+        Assert::greaterThanEq(0, $lifetime);
+
+        if (!empty($tags)) {
+            Assert::allStringNotEmpty($tags);
+        }
+
         $this->key = $key;
         $this->lifetime = $lifetime;
         $this->tags = $tags;
