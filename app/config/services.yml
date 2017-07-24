@@ -26,6 +26,7 @@ services:
         autowire: true
 
     Symfony\Component\Cache\Adapter\TagAwareAdapterInterface:
+        class: Symfony\Component\Cache\Adapter\TagAwareAdapterInterface
         factory: [Wishlist\Infrastructure\Cache\TagAwareAdapterFactory, createAdapter]
         arguments:
             - '@cache.app'
