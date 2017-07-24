@@ -42,6 +42,7 @@ final class WishRepository implements WishRepositoryInterface
 
     public function put(Wish $wish)
     {
+        $wish = $this->manager->merge($wish);
         $this->manager->persist($wish);
         $this->manager->flush();
     }
