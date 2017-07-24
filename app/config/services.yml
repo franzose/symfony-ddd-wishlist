@@ -46,3 +46,8 @@ services:
         arguments:
             - '@wishlist.wish.repository'
             - "@=service('wishlist.currency.factory')"
+
+    wishlist.event_listener.wish_not_found:
+        class: Wishlist\Http\EventListener\WishNotFoundExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
