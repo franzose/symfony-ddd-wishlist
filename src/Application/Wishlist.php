@@ -7,6 +7,8 @@ use Money\Money;
 use Wishlist\Application\Assembler\ListWishDtoAssembler;
 use Wishlist\Application\Dto\NewWishDto;
 use Wishlist\Domain\DepositId;
+use Wishlist\Domain\Exception\InvalidIdentityException;
+use Wishlist\Domain\Exception\WishNotFoundException;
 use Wishlist\Domain\Expense;
 use Wishlist\Domain\Wish;
 use Wishlist\Domain\WishId;
@@ -93,7 +95,11 @@ class Wishlist implements WishlistInterface
 
     private function getWish(string $wishId): Wish
     {
-        return $this->wishes->get(WishId::fromString($wishId));
+        try {
+            return $this->wishes->get(WishId::fromString($wishId));
+        } catch (InvalidIdentityException $ex) {
+            throw new WishNotFoundException($wishId);
+        }
     }
 
     public function getTotalWishesNumber(): int
