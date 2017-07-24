@@ -43,6 +43,11 @@
         &:not(:last-child) {
             border-bottom: 1px solid #eee;
         }
+
+        &:hover {
+            background: rgba(69,183,235, .1);
+            border-bottom-color: rgba(69,183,235, .15);
+        }
     }
 
     &__publish-button {
