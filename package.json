@@ -17,7 +17,12 @@
   "author": "Jan Iwanow <iwanow.jan@gmail.com> (http://janiwanow.com)",
   "license": "MIT",
   "dependencies": {
-    "@symfony/webpack-encore": "^0.10.0"
+    "@symfony/webpack-encore": "^0.10.0",
+    "url-search-params": "^0.7.1",
+    "vue": "^2.4.2",
+    "vue-loader": "^13.0.2",
+    "vue-resource": "^1.3.4",
+    "vue-template-compiler": "^2.4.2"
   },
   "devDependencies": {
     "node-sass": "^4.5.3",

@@ -23,6 +23,7 @@
         "php": ">=7.1",
         "doctrine/doctrine-bundle": "^1.6",
         "doctrine/orm": "^2.5",
+        "friendsofsymfony/jsrouting-bundle": "^1.6",
         "incenteev/composer-parameter-handler": "^2.0",
         "moneyphp/money": "^3.0",
         "ramsey/uuid": "^3.6",

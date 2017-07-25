@@ -30,7 +30,12 @@ class WishlistController
     }
 
     /**
-     * @Route("/wishes", name="wishlist.index", methods={"GET"})
+     * @Route(
+     *     "/wishes",
+     *     name="wishlist.index",
+     *     methods={"GET"},
+     *     options={"expose"=true}
+     * )
      * @param Request $request
      *
      * @return \Symfony\Component\HttpFoundation\Response
@@ -39,26 +44,42 @@ class WishlistController
     {
         $page = $request->query->getInt('page', 1) - 1;
         $limit = $request->query->getInt('limit', 10);
-        $startIndex = $page * $limit + 1;
-        $endIndex = $startIndex + $limit - 1;
 
-        $wishes = $this->wishlist->getWishesByPage($page, $limit);
-        $total = $this->wishlist->getTotalWishesNumber();
+        if ($request->isXmlHttpRequest()) {
+            $startIndex = $page * $limit + 1;
+            $endIndex = $startIndex + $limit - 1;
+
+            $wishes = $this->wishlist->getWishesByPage($page, $limit);
+            $total = $this->wishlist->getTotalWishesNumber();
+            $totalPages = ceil($total / $limit);
+            $page++;
+
+            return new JsonResponse([
+                'wishes' => $wishes,
+                'pagination' => compact(
+                    'page',
+                    'limit',
+                    'startIndex',
+                    'endIndex',
+                    'total',
+                    'totalPages'
+                )
+            ]);
+        }
 
         return $this->engine->renderResponse(
             ':wishlist:index.html.twig',
-            compact(
-                'wishes',
-                'total',
-                'page',
-                'startIndex',
-                'endIndex'
-            )
+            compact('page', 'limit')
         );
     }
 
     /**
-     * @Route("/wishes/{wishId}/publish", name="wishlist.wish.publish", methods={"PUT"})
+     * @Route(
+     *     "/wishes/{wishId}/publish",
+     *     name="wishlist.wish.publish",
+     *     methods={"PUT"},
+     *     options={"expose"=true}
+     * )
      * @param string $wishId
      *
      * @return JsonResponse
@@ -75,7 +96,12 @@ class WishlistController
     }
 
     /**
-     * @Route("/wishes/{wishId}/unpublish", name="wishlist.wish.unpublish", methods={"PUT"})
+     * @Route(
+     *     "/wishes/{wishId}/unpublish",
+     *     name="wishlist.wish.unpublish",
+     *     methods={"PUT"},
+     *     options={"expose"=true}
+     * )
      * @param string $wishId
      *
      * @return JsonResponse

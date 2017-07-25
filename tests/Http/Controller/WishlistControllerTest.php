@@ -7,6 +7,7 @@ use Liip\FunctionalTestBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Client;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Wishlist\Domain\Wish;
@@ -50,30 +51,85 @@ class WishlistControllerTest extends WebTestCase
         $this->translator = $container->get('translator');
     }
 
-    /**
-     * @dataProvider queryParametersDataProvider
-     */
-    public function testIndexActionShouldShowLatest10Wishes(array $parameters)
+    public function testIndexActionShouldShowVueTemplate()
     {
         $client = $this->makeClient();
 
-        $crawler = $client->request('GET', '/wishes', $parameters);
+        $crawler = $client->request('GET', '/wishes');
 
         $this->assertStatusCode(200, $client);
         $this->assertThereIsOnlyOneWishlist($crawler);
+        $this->assertThereIsOnlyOneWishRow($crawler);
+    }
 
-        $wishElements = $crawler->filter('.js-wish');
+    private function assertThereIsOnlyOneWishlist(Crawler $crawler): void
+    {
+        static::assertEquals(1, $crawler->filter('.js-wishlist')->count());
+    }
 
-        static::assertEquals(10, $wishElements->count());
-        $this->assertOrderedByDate($wishElements->extract(['data-id']));
+    private function assertThereIsOnlyOneWishRow(Crawler $crawler)
+    {
+        static::assertEquals(1, $crawler->filter('tr[is="wishlist-item"]')->count());
+    }
+
+    /**
+     * @param array $parameters
+     * @dataProvider queryParametersDataProvider
+     */
+    public function testIndexActionShouldReturnJsonOnAjaxCall(array $parameters)
+    {
+        $limit = $parameters['limit'] ?? 10;
+        $client = $this->makeClient();
+
+        $client->request(
+            'GET',
+            '/wishes',
+            $parameters,
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertStatusCode(200, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+
+        $actual = $this->parseJson($response);
+
+        foreach (['wishes', 'pagination'] as $key) {
+            static::assertArrayHasKey($key, $actual);
+        }
+
+        static::assertCount($limit, $actual['wishes']);
+
+        $paginationKeys = [
+            'page',
+            'limit',
+            'startIndex',
+            'endIndex',
+            'total',
+            'totalPages'
+        ];
+
+        foreach ($paginationKeys as $key) {
+            static::assertArrayHasKey($key, $actual['pagination']);
+        }
+
+        $this->assertOrderedByDate(array_column($actual['wishes'], 'id'), $limit);
     }
 
     public function queryParametersDataProvider()
     {
         return [
             'Should show latest 10 wishes' => [[]],
-            'Should also show the same (latest) 10 wishes' => [['page' => 1]]
+            'Should also show the same (latest) 10 wishes' => [['page' => 1]],
+            'Should show given number of wishes on the given page' => [['page' => 1, 'limit' => 15]]
         ];
+    }
+
+    private function assertOrderedByDate($wishIds, $limit = 10)
+    {
+        static::assertEquals($this->getFixtureWishIds(0, $limit), $wishIds);
     }
 
     private function getFixtureWishIds(int $offset = null, int $limit = null): array
@@ -95,16 +151,6 @@ class WishlistControllerTest extends WebTestCase
         return array_slice($ids, $offset, $limit, true);
     }
 
-    private function assertOrderedByDate($wishIds)
-    {
-        static::assertEquals($this->getFixtureWishIds(0, 10), $wishIds);
-    }
-
-    private function assertThereIsOnlyOneWishlist(Crawler $crawler): void
-    {
-        static::assertEquals(1, $crawler->filter('.js-wishlist')->count());
-    }
-
     public function testPublishShouldReturn404IfWishDoesNotExist()
     {
         $client = $this->makeClient();
@@ -121,16 +167,17 @@ class WishlistControllerTest extends WebTestCase
         $wishId = $this->fixtures[$fixtureKey]->getId()->getId();
 
         $this->sendPublishRequest($client, $wishId);
+        $response = $client->getResponse();
 
         $this->assertStatusCode(200, $client);
-        static::assertInstanceOf(JsonResponse::class, $client->getResponse());
+        static::assertInstanceOf(JsonResponse::class, $response);
         static::assertEquals(
             [
                 'url' => $this->router->generate('wishlist.wish.unpublish', compact('wishId')),
                 'label' => $this->translator->trans('wishlist.table.unpublish'),
                 'published' => true
             ],
-            $this->parseJson($client)
+            $this->parseJson($response)
         );
 
         static::assertTrue($this->getFixtureReference($fixtureKey)->isPublished());
@@ -152,16 +199,17 @@ class WishlistControllerTest extends WebTestCase
         $wishId = $this->fixtures[$fixtureKey]->getId()->getId();
 
         $this->sendUnpublishRequest($client, $wishId);
+        $response = $client->getResponse();
 
         $this->assertStatusCode(200, $client);
-        static::assertInstanceOf(JsonResponse::class, $client->getResponse());
+        static::assertInstanceOf(JsonResponse::class, $response);
         static::assertEquals(
             [
                 'url' => $this->router->generate('wishlist.wish.publish', compact('wishId')),
                 'label' => $this->translator->trans('wishlist.table.publish'),
                 'published' => false
             ],
-            $this->parseJson($client)
+            $this->parseJson($response)
         );
 
         static::assertFalse($this->getFixtureReference($fixtureKey)->isPublished());
@@ -190,13 +238,13 @@ class WishlistControllerTest extends WebTestCase
     }
 
     /**
-     * @param $client
+     * @param Response $response
      *
      * @return mixed
      */
-    private function parseJson(Client $client)
+    private function parseJson(Response $response)
     {
-        return json_decode($client->getResponse()->getContent(), true);
+        return json_decode($response->getContent(), true);
     }
 
     /**

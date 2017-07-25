@@ -7,6 +7,7 @@ Encore
     .addEntry('app', './app/Resources/assets/js/app.js')
     .addStyleEntry('styles', './app/Resources/assets/scss/app.scss')
     .enableSassLoader()
+    .enableVueLoader()
     .enableSourceMaps(!Encore.isProduction())
 ;
 
