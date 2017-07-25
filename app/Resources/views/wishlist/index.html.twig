@@ -21,54 +21,6 @@
             @unpublished="unpublish"></tr>
         </tbody>
     </table>
-
-    {#<table id="wishlist" class="wishlist js-wishlist">
-        <caption class="wishlist__title">
-            <div class="wishlist__title-wrapper">
-                <div class="wishlist__title-text">
-                    {{ 'wishlist.table.title'|trans }}
-                </div>
-                <div class="wishlist__pagination pagination">
-                    {% set page = page + 1 %}
-                    {% if (page > 1) %}
-                        <a href="{{ url('wishlist.index', { page: page - 1 }) }}"
-                           class="pagination__link pagination__link--prev">
-                            <svg class="pagination__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path transform="scale(-1,1) translate(-24,0)" d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"></path></svg>
-                        </a>
-                    {% endif %}
-                    {{ startIndex }}-{{ endIndex }}
-                    {{ 'wishlist.table.of'|trans }}
-                    {{ total }}
-                    {{ 'wishlist.table.total'|trans }}
-                    {% if (endIndex < total) %}
-                        <a href="{{ url('wishlist.index', { page: page + 1 }) }}"
-                           class="pagination__link pagination__link--next">
-                            <svg class="pagination__icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M13.025 1l-2.847 2.828 6.176 6.176h-16.354v3.992h16.354l-6.176 6.176 2.847 2.828 10.975-11z"></path></svg>
-                        </a>
-                    {% endif %}
-                </div>
-            </div>
-        </caption>
-        <tbody>
-        {% for wish in wishes %}
-            <tr class="wishlist__wish{% if not wish.isPublished %} wishlist__wish--unpublished{% endif %} js-wish" data-id="{{ wish.id }}">
-                <td class="wishlist__muted">{{ wish.createdAt }}</td>
-                <td class="wishlist__name">{{ wish.name }}</td>
-                <td>{{ wish.fund }} {{ 'wishlist.table.of'|trans }} {{ wish.price }}</td>
-                <td class="wishlist__muted">{{ wish.currency }}</td>
-                <td>
-                    {% set publicationMethod = wish.isPublished ? 'unpublish' : 'publish' %}
-                    <button
-                        type="button"
-                        class="wishlist__publish-button js-publish-button"
-                        data-url="{{ url('wishlist.wish.' ~ publicationMethod, { wishId: wish.id}) }}">
-                        {{ ('wishlist.table.' ~ publicationMethod)|trans }}
-                    </button>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>#}
 {% endblock %}
 
 {% block scripts %}
