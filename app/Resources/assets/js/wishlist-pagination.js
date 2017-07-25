@@ -21,10 +21,10 @@ export default {
         'lang'
     ],
     methods: {
-        prev: function () {
+        prev() {
             this.$emit('paginated', 'prev');
         },
-        next: function () {
+        next() {
             this.$emit('paginated', 'next');
         }
     }

@@ -23,7 +23,7 @@ window.addEventListener('load', function () {
             wishlistPagination: WishlistPagination,
             wishlistItem: WishlistItem
         },
-        mounted: function () {
+        mounted() {
             this.lang = translations;
 
             this.$http.get(Routing.generate('wishlist.index', {
@@ -37,7 +37,7 @@ window.addEventListener('load', function () {
                 });
         },
         methods: {
-            goToPage: function (direction) {
+            goToPage(direction) {
                 if (this.pagination.page <= 1 && direction === 'prev' ||
                     this.pagination.page >= this.pagination.totalPages && direction === 'next') {
                     return;
@@ -55,7 +55,7 @@ window.addEventListener('load', function () {
                     })
                     .catch(e => {})
             },
-            publish: function (wish) {
+            publish(wish) {
                 this.$http.put(Routing.generate('wishlist.wish.publish', {
                     wishId: wish.id
                 }))
@@ -63,7 +63,7 @@ window.addEventListener('load', function () {
                         wish.isPublished = false;
                     });
             },
-            unpublish: function (wish) {
+            unpublish(wish) {
                 this.$http.put(Routing.generate('wishlist.wish.unpublish', {
                     wishId: wish.id
                 }))

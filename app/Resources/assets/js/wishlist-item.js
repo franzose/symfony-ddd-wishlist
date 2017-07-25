@@ -23,7 +23,7 @@ export default {
         'lang',
     ],
     methods: {
-        togglePublishedStatus: function (wish) {
+        togglePublishedStatus(wish) {
             wish.isPublished = !wish.isPublished;
 
             this.$emit(
