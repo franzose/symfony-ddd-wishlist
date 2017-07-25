@@ -1,46 +1,14 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import URLSearchParams from 'url-search-params';
+import WishlistPagination from './wishlist-pagination';
+import WishlistItem from './wishlist-item';
 
 Vue.use(VueResource);
 
 window.addEventListener('load', function () {
-    Vue.component('wishlist-pagination', {
-        template: document.getElementById('wishlist-pagination').innerHTML,
-        props: [
-            'pagination',
-            'lang'
-        ],
-        methods: {
-            prev: function () {
-                this.$emit('paginated', 'prev');
-            },
-            next: function () {
-                this.$emit('paginated', 'next');
-            }
-        }
-    });
-
-    Vue.component('wishlist-item', {
-        template: document.getElementById('wishlist-item').innerHTML,
-        props: [
-            'wish',
-            'lang',
-        ],
-        methods: {
-            togglePublishedStatus: function (wish) {
-                wish.isPublished = !wish.isPublished;
-
-                this.$emit(
-                    wish.isPublished ? 'published' : 'unpublished',
-                    wish
-                );
-            }
-        }
-    });
-
-    const app = new Vue({
-        el: '#app',
+    new Vue({
+        el: '#wishlist',
         data: {
             lang: {
                 publish: 'Publish',
@@ -51,7 +19,13 @@ window.addEventListener('load', function () {
             wishlist: [],
             isActive: false
         },
+        components: {
+            wishlistPagination: WishlistPagination,
+            wishlistItem: WishlistItem
+        },
         mounted: function () {
+            this.lang = translations;
+
             this.$http.get(Routing.generate('wishlist.index', {
                 page: new URLSearchParams(location.search).get('page')
             }))
@@ -60,7 +34,7 @@ window.addEventListener('load', function () {
                     this.wishlist = response.wishes;
                     this.pagination = response.pagination;
                     this.isActive = true;
-                })
+                });
         },
         methods: {
             goToPage: function (direction) {
