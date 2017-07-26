@@ -2,7 +2,12 @@ language: php
 php:
   - '7.1'
   - nightly
-install: travis_retry composer install --no-interaction --prefer-source
+install:
+  - cp ./app/config/parameters.yml.dist ./app/config/parameters.yml
+  - cp ./app/config/parameters_permanent.yml.dist ./app/config/parameters_permanent.yml
+  - travis_retry composer install --no-interaction --prefer-source
+  - npm install
+  - docker-compose up
 script: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --colors
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
