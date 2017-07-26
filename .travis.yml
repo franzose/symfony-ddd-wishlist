@@ -1,4 +1,7 @@
+sudo: required
 language: php
+services:
+  - docker
 php:
   - '7.1'
   - nightly
@@ -7,8 +10,9 @@ install:
   - cp ./app/config/parameters_permanent.yml.dist ./app/config/parameters_permanent.yml
   - travis_retry composer install --no-interaction --prefer-source
   - npm install
+script:
   - docker-compose up
-script: vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --colors
+  - vendor/bin/phpunit --coverage-text --coverage-clover=coverage.xml --colors
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
   - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
