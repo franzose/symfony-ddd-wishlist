@@ -6,7 +6,7 @@ services:
         ports:
             - "4500:5432"
         environment:
-            POSTGRES_USER: user
+            POSTGRES_USER: postgres
             POSTGRES_PASSWORD: userpass
             POSTGRES_DB: symfony_wishlist
     cache:
