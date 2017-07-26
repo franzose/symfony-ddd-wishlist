@@ -14,18 +14,14 @@ window.addEventListener('load', function () {
         {
             path: Routing.generate('wishlist.index'),
             component: Wishlist
-        },
-        {
-            path: '/test',
-            component: {
-                template: `<div>asdkjfdfkljafkljsdlsdkjlkj</div>`
-            }
         }
     ];
 
     const router = new VueRouter({
         routes,
-        mode: 'history'
+        mode: 'history',
+        linkActiveClass: 'is-active',
+        linkExactActiveClass: 'is-current'
     });
 
     new Vue({

@@ -20,6 +20,10 @@
         &--next {
             margin-left: 1rem;
         }
+
+        &.is-current {
+            display: none;
+        }
     }
 
     &__icon {

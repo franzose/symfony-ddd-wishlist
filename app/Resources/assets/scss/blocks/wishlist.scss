@@ -36,7 +36,7 @@
     }
 
     &__wish {
-        &--unpublished {
+        &.is-unpublished {
             color: #bbb;
         }
 

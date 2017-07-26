@@ -1,7 +1,7 @@
 export default {
     template:
         `
-        <tr :class="{ 'wishlist__wish js-wish': true, 'wishlist__wish--unpublished': !wish.isPublished }"
+        <tr :class="{ 'wishlist__wish js-wish': true, 'is-unpublished': !wish.isPublished }"
             :data-id="wish.id">
             <td class="wishlist__muted">{{ wish.createdAt }}</td>
             <td class="wishlist__name">{{ wish.name }}</td>
