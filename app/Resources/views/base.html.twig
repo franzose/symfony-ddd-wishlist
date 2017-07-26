@@ -10,9 +10,16 @@
         <div class="layout">
             {% block body %}{% endblock %}
         </div>
+        <script>
+            window.translations = {
+                title: '{{ 'wishlist.table.title'|trans }}',
+                publish: '{{ 'wishlist.table.publish'|trans }}',
+                unpublish: '{{ 'wishlist.table.unpublish'|trans }}',
+                of: '{{ 'wishlist.table.of'|trans }}'
+            };
+        </script>
         <script src="{{ asset('assets/app.js') }}"></script>
         <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
         <script src="{{ path('fos_js_routing_js', { callback: 'fos.Router.setData' }) }}"></script>
-        {% block scripts %}{% endblock %}
     </body>
 </html>

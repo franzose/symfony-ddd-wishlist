@@ -2,37 +2,7 @@
 
 {% block body %}
     <div id="wishlist"
-         class="wishlist js-wishlist"
-         :class="{ 'wishlist--active': isActive }">
-        <table>
-            <caption class="wishlist__title">
-                <div class="wishlist__title-wrapper">
-                    <div class="wishlist__title-text">{{ 'wishlist.table.title'|trans }}</div>
-                    <wishlist-pagination
-                            :lang="lang"
-                            :pagination="pagination"
-                            @paginated="goToPage"></wishlist-pagination>
-                </div>
-            </caption>
-            <tbody>
-            <tr is="wishlist-item"
-                v-for="wish in wishlist"
-                :lang="lang"
-                :wish="wish"
-                :key="wish.id"
-                @published="publish"
-                @unpublished="unpublish"></tr>
-            </tbody>
-        </table>
+         class="wishlist js-wishlist">
+        <router-view />
     </div>
-{% endblock %}
-
-{% block scripts %}
-    <script>
-        let translations = {
-            publish: '{{ 'wishlist.table.publish'|trans }}',
-            unpublish: '{{ 'wishlist.table.unpublish'|trans }}',
-            of: '{{ 'wishlist.table.of'|trans }}'
-        };
-    </script>
 {% endblock %}

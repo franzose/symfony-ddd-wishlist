@@ -59,17 +59,11 @@ class WishlistControllerTest extends WebTestCase
 
         $this->assertStatusCode(200, $client);
         $this->assertThereIsOnlyOneWishlist($crawler);
-        $this->assertThereIsOnlyOneWishRow($crawler);
     }
 
     private function assertThereIsOnlyOneWishlist(Crawler $crawler): void
     {
         static::assertEquals(1, $crawler->filter('.js-wishlist')->count());
-    }
-
-    private function assertThereIsOnlyOneWishRow(Crawler $crawler)
-    {
-        static::assertEquals(1, $crawler->filter('tr[is="wishlist-item"]')->count());
     }
 
     /**
