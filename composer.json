@@ -1,7 +1,9 @@
 {
-    "name": "yan/wishlist",
-    "license": "proprietary",
+    "name": "franzose/wishlist",
+    "license": "MIT",
     "type": "project",
+    "keywords": ["symfony", "ddd", "vuejs", "wishlist", "sample app"],
+    "description": "Wishlist, a sample application on Symfony 3 and Vue.js built with DDD in mind.",
     "autoload": {
         "psr-4": {
             "Wishlist\\": "src/"
