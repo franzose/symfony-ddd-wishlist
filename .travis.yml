@@ -9,7 +9,7 @@ before_install:
   - cp ./app/config/parameters.yml.dist ./app/config/parameters.yml
   - cp ./app/config/parameters_permanent.yml.dist ./app/config/parameters_permanent.yml
   - cp ./docker-compose.yml.dist ./docker-compose.yml
-  - docker-compose up
+  - docker-compose up -d
 install:
   - travis_retry composer install --no-interaction --prefer-source
   - npm install
