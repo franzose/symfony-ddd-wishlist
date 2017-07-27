@@ -1,0 +1,28 @@
+.table {
+    &__caption {
+        margin-bottom: .25rem;
+        text-align: left;
+        text-indent: .45rem;
+        font-variant: small-caps;
+        text-transform: lowercase;
+        letter-spacing: .125rem;
+        font-weight: 500;
+    }
+
+    &__caption-wrapper {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+
+    &__pagination {
+        position: relative;
+        top: -.125rem;
+        font-size: .65rem;
+        color: #777;
+    }
+
+    td {
+        padding: .125rem .5rem;
+    }
+}

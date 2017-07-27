@@ -3,29 +3,6 @@
     max-width: 35rem;
     margin: 3rem auto;
 
-    &__title {
-        margin-bottom: .25rem;
-        text-align: left;
-        text-indent: .45rem;
-        font-variant: small-caps;
-        text-transform: lowercase;
-        letter-spacing: .125rem;
-        font-weight: 500;
-    }
-
-    &__title-wrapper {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-    }
-
-    &__pagination {
-        position: relative;
-        top: -.125rem;
-        font-size: .65rem;
-        color: #777;
-    }
-
     &__muted {
         font-size: .75rem;
         color: #777;
@@ -65,9 +42,5 @@
     &__wish--unpublished &__publish-button {
         color: #fff;
         background: #00a5f2;
-    }
-
-    td {
-        padding: .125rem .5rem;
     }
 }

@@ -5,10 +5,10 @@ import WishlistItem from './wishlist-item';
 export default {
     template:
         `
-        <table>
-            <caption class="wishlist__title">
-                <div class="wishlist__title-wrapper">
-                    <div class="wishlist__title-text">{{ lang.title }}</div>
+        <table class="table">
+            <caption class="table__caption">
+                <div class="table__caption-wrapper">
+                    <div class="table__caption-text">{{ lang.title }}</div>
                     <wishlist-pagination
                         :lang="lang"
                         :pagination="pagination"></wishlist-pagination>
