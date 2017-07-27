@@ -38,7 +38,7 @@ export default {
     },
     beforeRouteEnter(to, from, next) {
         Vue.http.get(Routing.generate('wishlist.index', {
-            page: to.query.page
+            page: to.query.page || 1
         }))
             .then(response => response.body)
             .then(response => {
@@ -51,7 +51,7 @@ export default {
     },
     beforeRouteUpdate (to, from, next) {
         Vue.http.get(Routing.generate('wishlist.index', {
-            page: to.query.page
+            page: to.query.page || 1
         }))
             .then(response => response.body)
             .then(response => {
