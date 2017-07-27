@@ -19,7 +19,9 @@ export default {
                 v-for="wish in wishlist"
                 :lang="lang"
                 :wish="wish"
-                :key="wish.id"></tr>
+                :key="wish.id"
+                @published="publish"
+                @unpublished="unpublish"></tr>
             </tbody>
         </table>
         `,
@@ -59,4 +61,22 @@ export default {
                 next();
             });
     },
+    methods: {
+        publish(wish) {
+            this.$http.put(Routing.generate('wishlist.wish.publish', {
+                wishId: wish.id
+            }))
+                .catch(e => {
+                    wish.isPublished = false;
+                });
+        },
+        unpublish(wish) {
+            this.$http.put(Routing.generate('wishlist.wish.unpublish', {
+                wishId: wish.id
+            }))
+                .catch(e => {
+                    wish.isPublished = true;
+                });
+        },
+    }
 };

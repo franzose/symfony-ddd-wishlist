@@ -31,24 +31,6 @@ window.addEventListener('load', function () {
             wishlist: Wishlist,
             wishlistPagination: WishlistPagination,
             wishlistItem: WishlistItem
-        },
-        methods: {
-            publish(wish) {
-                this.$http.put(Routing.generate('wishlist.wish.publish', {
-                    wishId: wish.id
-                }))
-                    .catch(e => {
-                        wish.isPublished = false;
-                    });
-            },
-            unpublish(wish) {
-                this.$http.put(Routing.generate('wishlist.wish.unpublish', {
-                    wishId: wish.id
-                }))
-                    .catch(e => {
-                        wish.isPublished = true;
-                    });
-            },
         }
     });
 });
