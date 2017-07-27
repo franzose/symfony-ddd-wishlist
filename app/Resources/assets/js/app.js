@@ -1,9 +1,6 @@
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
-import URLSearchParams from 'url-search-params';
-import WishlistPagination from './wishlist-pagination';
-import WishlistItem from './wishlist-item';
 import Wishlist from './wishlist';
 
 Vue.use(VueResource);
@@ -26,11 +23,6 @@ window.addEventListener('load', function () {
 
     new Vue({
         router,
-        el: '#wishlist',
-        components: {
-            wishlist: Wishlist,
-            wishlistPagination: WishlistPagination,
-            wishlistItem: WishlistItem
-        }
+        el: '#wishlist'
     });
 });
