@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import WishlistPagination from './wishlist-pagination';
+import Pagination from './pagination';
 import WishlistItem from './wishlist-item';
 
 export default {
@@ -9,9 +9,10 @@ export default {
             <caption class="table__caption">
                 <div class="table__caption-wrapper">
                     <div class="table__caption-text">{{ lang.title }}</div>
-                    <wishlist-pagination
+                    <pagination
+                        route="wishlist.index"
                         :lang="lang"
-                        :pagination="pagination"></wishlist-pagination>
+                        :pagination="pagination" />
                 </div>
             </caption>
             <tbody>
@@ -26,7 +27,7 @@ export default {
         </table>
         `,
     components: {
-        wishlistPagination: WishlistPagination,
+        pagination: Pagination,
         wishlistItem: WishlistItem
     },
     data() {

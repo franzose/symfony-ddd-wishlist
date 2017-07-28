@@ -15,8 +15,9 @@ export default {
         </div>
         `,
     props: [
+        'route',
         'pagination',
-        'lang'
+        'lang',
     ],
     computed: {
         prevPage() {
@@ -24,10 +25,10 @@ export default {
                 ? this.pagination.page - 1
                 : this.pagination.page;
 
-            return Routing.generate('wishlist.index', { page });
+            return Routing.generate(this.route, { page });
         },
         nextPage() {
-            return Routing.generate('wishlist.index', { page: this.pagination.page + 1 });
+            return Routing.generate(this.route, { page: this.pagination.page + 1 });
         }
     }
 };
