@@ -22,6 +22,15 @@
         color: #777;
     }
 
+    &__close {
+        position: absolute;
+        top: 1.45rem;
+        right: 1rem;
+        width: 16px;
+        height: 16px;
+        cursor: pointer;
+    }
+
     tr {
         &:not(:last-child) {
             border-bottom: 1px solid #eee;

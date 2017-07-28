@@ -11,4 +11,5 @@ class ListWishDto
     public $createdAt;
     public $isPublished;
     public $currency;
+    public $deposits;
 }

@@ -1,0 +1,42 @@
+.wish-deposits {
+    position: absolute;
+    top: 0;
+    z-index: -1;
+    width: 100%;
+    min-height: 100%;
+    padding: 1rem;
+    background: #fff;
+    box-shadow: 0 0 10px #eee;
+    border-radius: 4px;
+    opacity: 0;
+    transition: z-index .35s, opacity .35s;
+
+    &.is-active {
+        z-index: 5;
+        opacity: 1;
+    }
+
+    &__table {
+        width: 100%;
+    }
+
+    &__rows {
+        display: block;
+        height: 310px;
+        overflow: auto;
+    }
+
+    tr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    td {
+        display: block;
+
+        &:nth-child(2) {
+            flex-grow: 1;
+        }
+    }
+}

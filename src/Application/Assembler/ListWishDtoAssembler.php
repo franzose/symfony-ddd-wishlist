@@ -2,7 +2,9 @@
 
 namespace Wishlist\Application\Assembler;
 
+use Wishlist\Application\Dto\ListDepositDto;
 use Wishlist\Application\Dto\ListWishDto;
+use Wishlist\Domain\Deposit;
 use Wishlist\Domain\Wish;
 
 class ListWishDtoAssembler
@@ -23,8 +25,21 @@ class ListWishDtoAssembler
             $dto->createdAt = $wish->getCreatedAt()->format('d.m');
             $dto->isPublished = $wish->isPublished();
             $dto->currency = $wish->getCurrency()->getCode();
+            $dto->deposits = $this->assembleDeposits($wish->getDeposits());
 
             return $dto;
         }, $wishes);
+    }
+
+    private function assembleDeposits(array $deposits)
+    {
+        return array_map(function (Deposit $deposit) {
+            $dto = new ListDepositDto();
+            $dto->amount = $deposit->getMoney()->getAmount();
+            $dto->currency = $deposit->getMoney()->getCurrency()->getCode();
+            $dto->createdAt = $deposit->getDate()->format('d.m.Y H:i');
+
+            return $dto;
+        }, $deposits);
     }
 }

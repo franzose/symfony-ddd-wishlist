@@ -4,7 +4,7 @@ export default {
         <tr :class="{ 'wishlist__wish js-wish': true, 'is-unpublished': !wish.isPublished }"
             :data-id="wish.id">
             <td class="wishlist__muted">{{ wish.createdAt }}</td>
-            <td class="wishlist__name">{{ wish.name }}</td>
+            <td class="wishlist__name" @click="choose(wish)">{{ wish.name }}</td>
             <td>{{ wish.fund }} {{ lang.of }} {{ wish.price }}</td>
             <td class="wishlist__muted">{{ wish.currency }}</td>
             <td>
@@ -23,6 +23,9 @@ export default {
         'lang',
     ],
     methods: {
+        choose(wish) {
+            this.$emit('chosen', wish);
+        },
         togglePublishedStatus(wish) {
             wish.isPublished = !wish.isPublished;
 

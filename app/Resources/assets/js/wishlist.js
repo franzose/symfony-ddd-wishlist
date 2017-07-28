@@ -1,40 +1,53 @@
 import Vue from 'vue';
 import Pagination from './pagination';
 import WishlistItem from './wishlist-item';
+import Deposits from './wish-deposits';
 
 export default {
     template:
         `
-        <table class="table">
-            <caption class="table__caption">
-                <div class="table__caption-wrapper">
-                    <div class="table__caption-text">{{ lang.title }}</div>
-                    <pagination
-                        route="wishlist.index"
-                        :lang="lang"
-                        :pagination="pagination" />
-                </div>
-            </caption>
-            <tbody>
-            <tr is="wishlist-item"
-                v-for="wish in wishlist"
-                :lang="lang"
-                :wish="wish"
-                :key="wish.id"
-                @published="publish"
-                @unpublished="unpublish"></tr>
-            </tbody>
-        </table>
+        <div>
+            <table class="table">
+                <caption class="table__caption">
+                    <div class="table__caption-wrapper">
+                        <div class="table__caption-text">{{ lang.title }}</div>
+                        <pagination
+                            route="wishlist.index"
+                            :lang="lang"
+                            :pagination="pagination" />
+                    </div>
+                </caption>
+                <tbody>
+                <tr is="wishlist-item"
+                    v-for="wish in wishlist"
+                    :lang="lang"
+                    :wish="wish"
+                    :key="wish.id"
+                    @published="publish"
+                    @unpublished="unpublish"
+                    @chosen="showDeposits"></tr>
+                </tbody>
+            </table>
+            <deposits
+                :isActive="shouldShowDeposits"
+                :wishName="chosenWishName"
+                :deposits="deposits"
+                @closed="hideDeposits" />
+        </div>
         `,
     components: {
         pagination: Pagination,
-        wishlistItem: WishlistItem
+        wishlistItem: WishlistItem,
+        deposits: Deposits
     },
     data() {
         return {
             wishlist: [],
             pagination: {},
-            lang: window.translations
+            lang: window.translations,
+            shouldShowDeposits: false,
+            chosenWishName: '',
+            deposits: []
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -79,5 +92,37 @@ export default {
                     wish.isPublished = true;
                 });
         },
+        showDeposits(wish) {
+            this.shouldShowDeposits = true;
+            this.chosenWishName = wish.name;
+            this.deposits = wish.deposits || [
+                {
+                    id: 1231232,
+                    amount: 333,
+                    currency: 'USD',
+                    createdAt: '28.07.2017 13:45:56'
+                },
+                {
+                    id: 3094820948,
+                    amount: 333,
+                    currency: 'USD',
+                    createdAt: '28.07.2017 13:45:56'
+                },
+                {
+                    id: 1348503985980,
+                    amount: 333,
+                    currency: 'USD',
+                    createdAt: '28.07.2017 13:45:56'
+                }
+            ];
+        },
+        hideDeposits() {
+            this.shouldShowDeposits = false;
+
+            setTimeout(() => {
+                this.chosenWishName = '';
+                this.deposits = [];
+            }, 350);
+        }
     }
 };
