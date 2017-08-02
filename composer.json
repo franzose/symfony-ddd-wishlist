@@ -1,5 +1,5 @@
 {
-    "name": "franzose/wishlist",
+    "name": "franzose/symfony-ddd-wishlist",
     "license": "MIT",
     "type": "project",
     "keywords": ["symfony", "ddd", "vuejs", "wishlist", "sample app"],
