@@ -95,26 +95,7 @@ export default {
         showDeposits(wish) {
             this.shouldShowDeposits = true;
             this.chosenWishName = wish.name;
-            this.deposits = wish.deposits || [
-                {
-                    id: 1231232,
-                    amount: 333,
-                    currency: 'USD',
-                    createdAt: '28.07.2017 13:45:56'
-                },
-                {
-                    id: 3094820948,
-                    amount: 333,
-                    currency: 'USD',
-                    createdAt: '28.07.2017 13:45:56'
-                },
-                {
-                    id: 1348503985980,
-                    amount: 333,
-                    currency: 'USD',
-                    createdAt: '28.07.2017 13:45:56'
-                }
-            ];
+            this.deposits = wish.deposits;
         },
         hideDeposits() {
             this.shouldShowDeposits = false;
