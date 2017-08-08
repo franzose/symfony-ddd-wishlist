@@ -10,7 +10,8 @@ use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\DepositDoesNotExistException;
-use Wishlist\Domain\Exception\WishIsInactiveException;
+use Wishlist\Domain\Exception\WishIsFulfilledException;
+use Wishlist\Domain\Exception\WishIsUnpublishedException;
 
 class Wish
 {
@@ -52,10 +53,12 @@ class Wish
 
     private function assertCanDeposit(Money $amount)
     {
-        if (!$this->published || $this->fulfilled) {
-            throw new WishIsInactiveException(
-                'Deposit cannot be made.'
-            );
+        if (!$this->published) {
+            throw new WishIsUnpublishedException($this->getId());
+        }
+
+        if ($this->fulfilled) {
+            throw new WishIsFulfilledException($this->getId());
         }
 
         Assert::true(
@@ -78,8 +81,12 @@ class Wish
 
     public function withdraw(DepositId $depositId)
     {
-        if (!$this->published || $this->fulfilled) {
-            throw new WishIsInactiveException('Withdraw cannot be made.');
+        if (!$this->published) {
+            throw new WishIsUnpublishedException($this->getId());
+        }
+
+        if ($this->fulfilled) {
+            throw new WishIsFulfilledException($this->getId());
         }
 
         $deposit = $this->getDepositById($depositId);

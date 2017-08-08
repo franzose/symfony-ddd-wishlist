@@ -4,7 +4,7 @@ namespace Wishlist\Domain\Exception;
 
 use Exception;
 
-class WishNotFoundException extends Exception
+class WishNotFoundException extends Exception implements DomainExceptionInterface, NotFoundExceptionInterface
 {
     public function __construct($wishId)
     {

@@ -40,34 +40,28 @@ class WishTest extends TestCase
     }
 
     /**
-     * @param Wish $wish
-     *
-     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
-     * @dataProvider mustNotDepositDataProvider
+     * @expectedException \Wishlist\Domain\Exception\WishIsUnpublishedException
      */
-    public function testMustNotDeposit(Wish $wish)
+    public function testMustNotDepositWhenUnpublished()
     {
-        $wish->deposit(new Money(100, new Currency('USD')));
+        $wish = $this->createWishWithEmptyFund();
         $wish->deposit(new Money(100, new Currency('USD')));
     }
 
-    public function mustNotDepositDataProvider()
+    /**
+     * @expectedException \Wishlist\Domain\Exception\WishIsFulfilledException
+     */
+    public function testMustNotDepositWhenFulfilled()
     {
         $fulfilled = $this->createWishWithPriceAndFund(500, 450);
         $fulfilled->publish();
 
-        return [
-            'Should not create a deposit if the wish is unpublished' => [
-                $this->createWishWithEmptyFund()
-            ],
-            'Should not create a deposit if the wish is already fulfilled' => [
-                $fulfilled
-            ]
-        ];
+        $fulfilled->deposit(new Money(100, new Currency('USD')));
+        $fulfilled->deposit(new Money(100, new Currency('USD')));
     }
 
     /**
-     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
+     * @expectedException \Wishlist\Domain\Exception\WishIsUnpublishedException
      */
     public function testMustNotWithdrawIfUnpublished()
     {
@@ -80,7 +74,7 @@ class WishTest extends TestCase
     }
 
     /**
-     * @expectedException \Wishlist\Domain\Exception\WishIsInactiveException
+     * @expectedException \Wishlist\Domain\Exception\WishIsFulfilledException
      */
     public function testMustNotWithdrawIfFulfilled()
     {

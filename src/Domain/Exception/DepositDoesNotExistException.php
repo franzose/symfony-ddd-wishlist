@@ -5,7 +5,7 @@ namespace Wishlist\Domain\Exception;
 use Exception;
 use Wishlist\Domain\DepositId;
 
-class DepositDoesNotExistException extends Exception
+class DepositDoesNotExistException extends Exception implements DomainExceptionInterface, NotFoundExceptionInterface
 {
     public function __construct(DepositId $id)
     {
