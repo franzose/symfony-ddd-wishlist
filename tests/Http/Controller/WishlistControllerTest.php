@@ -231,6 +231,88 @@ class WishlistControllerTest extends WebTestCase
         );
     }
 
+    public function testSimpleDeposit()
+    {
+        $client = $this->makeClient();
+
+        $this->sendDepositRequest(
+            $client,
+            $this->fixtures['wish-0']->getId()->getId(),
+            335
+        );
+
+        $response = $client->getResponse();
+
+        $this->assertStatusCode(200, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+
+        $json = $this->parseJson($response);
+        static::assertArrayHasKey('success', $json);
+        static::assertTrue($json['success']);
+        static::assertArrayHasKey('deposit', $json);
+
+        $depositKeys = [
+            'depositId',
+            'amount',
+            'currency',
+            'createdAt'
+        ];
+
+        foreach ($depositKeys as $key) {
+            static::assertArrayHasKey($key, $json['deposit']);
+        }
+    }
+
+    public function testDepositShouldFailValidation()
+    {
+        $client = $this->makeClient();
+
+        $this->sendDepositRequest(
+            $client,
+            $this->fixtures['wish-0']->getId()->getId(),
+            'nonsense'
+        );
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertFalse($json['success']);
+        static::assertArrayHasKey('violations', $json);
+        static::assertArrayHasKey('amount', $json['violations']);
+    }
+
+    public function testMustNotDepositToUnpublishedWish()
+    {
+        $client = $this->makeClient();
+
+        $this->sendDepositRequest(
+            $client,
+            $this->fixtures['wish-unpublished']->getId()->getId(),
+            123
+        );
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertFalse($json['success']);
+        static::assertArrayHasKey('message', $json);
+    }
+
+    private function sendDepositRequest(Client $client, string $wishId, $amount): void
+    {
+        $client->request(
+            'POST',
+            $this->router->generate('wishlist.wish.deposit', compact('wishId')),
+            compact('amount'),
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+        );
+    }
+
     /**
      * @param Response $response
      *

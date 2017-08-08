@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
@@ -144,12 +145,13 @@ class WishlistController
         ConstraintViolationListTransformerInterface $transformer
     ) {
         $wishId = $request->get('wishId');
-        $amount = $request->get('amount');
+        $amount = $request->request->getInt('amount');
 
         $violations = $this->validator->validate(compact('amount'), new Collection([
             'amount' => new Required([
-                new NotBlank(),
-                new Type(['type' => 'numeric'])
+                new GreaterThan([
+                    'value' => 0
+                ])
             ])
         ]));
 
