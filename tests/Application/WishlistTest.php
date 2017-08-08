@@ -80,10 +80,14 @@ class WishlistTest extends TestCase
         $repositoryCapacity = $repository->count();
         $wishlist = new Wishlist($repository, new Currency('USD'));
 
-        $depositId = $wishlist->deposit($this->wishIds[0]->getId(), 100);
+        $deposit = $wishlist->deposit($this->wishIds[0]->getId(), 100);
 
         static::assertSame($repositoryCapacity, $repository->count());
-        static::assertSame($depositId, $repository->get($this->wishIds[0])->getDeposits()[0]->getId()->getId());
+        static::assertSame(
+            $deposit->depositId,
+            $repository->get($this->wishIds[0])->getDeposits()[0]->getId()->getId()
+        );
+
         static::assertEquals(110, $repository->get($this->wishIds[0])->getFund()->getAmount());
     }
 
@@ -93,9 +97,9 @@ class WishlistTest extends TestCase
         $repositoryCapacity = $repository->count();
         $wishlist = new Wishlist($repository, new Currency('USD'));
         $wishId = $this->wishIds[0]->getId();
-        $depositId = $wishlist->deposit($wishId, 25);
+        $deposit = $wishlist->deposit($wishId, 25);
 
-        $amount = $wishlist->withdraw($wishId, $depositId);
+        $amount = $wishlist->withdraw($wishId, $deposit->depositId);
 
         static::assertSame($repositoryCapacity, $repository->count());
         static::assertTrue($amount->equals($repository->get($this->wishIds[0])->getFund()));

@@ -5,6 +5,7 @@ namespace Wishlist\Application;
 use Money\Currency;
 use Money\Money;
 use Wishlist\Application\Assembler\ListWishDtoAssembler;
+use Wishlist\Application\Dto\DepositDto;
 use Wishlist\Application\Dto\NewWishDto;
 use Wishlist\Domain\DepositId;
 use Wishlist\Domain\Exception\InvalidIdentityException;
@@ -61,13 +62,19 @@ class Wishlist implements WishlistInterface
         return $wish;
     }
 
-    public function deposit(string $wishId, int $amount): string
+    public function deposit(string $wishId, int $amount): DepositDto
     {
         $wish = $this->getWish($wishId);
-        $depositId = $wish->deposit(new Money($amount, $this->currency));
+        $deposit = $wish->deposit(new Money($amount, $this->currency));
         $this->wishes->put($wish);
 
-        return $depositId->getId();
+        $dto = new DepositDto();
+        $dto->depositId = $deposit->getId()->getId();
+        $dto->amount = $deposit->getMoney()->getAmount();
+        $dto->currency = $deposit->getMoney()->getCurrency();
+        $dto->createdAt = $deposit->getDate()->format('d.m.Y H:i');
+
+        return $dto;
     }
 
     public function withdraw(string $wishId, string $depositId): Money

@@ -1,4 +1,19 @@
 .table {
+    tr {
+        &:not(:last-child) {
+            border-bottom: 1px solid #eee;
+        }
+
+        &:hover {
+            background: rgba(69,183,235, .1);
+            border-bottom-color: rgba(69,183,235, .15);
+        }
+    }
+
+    td {
+        padding: .125rem .5rem;
+    }
+
     &__caption {
         margin-bottom: .25rem;
         text-align: left;
@@ -31,18 +46,12 @@
         cursor: pointer;
     }
 
-    tr {
-        &:not(:last-child) {
-            border-bottom: 1px solid #eee;
-        }
-
-        &:hover {
-            background: rgba(69,183,235, .1);
-            border-bottom-color: rgba(69,183,235, .15);
-        }
+    &__padded {
+        padding: 1rem;
     }
 
-    td {
-        padding: .125rem .5rem;
+    &__button {
+        display: block;
+        margin: 0 auto;
     }
 }

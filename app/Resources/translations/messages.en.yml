@@ -9,3 +9,5 @@ wishlist:
         publish: Publish
         unpublish: Unpublish
         deposits_of: Deposits of
+        enter_new_deposit: Enter new deposit
+        deposit: Deposit

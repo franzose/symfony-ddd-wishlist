@@ -13,11 +13,46 @@ html {
     font-size: 20px;
 }
 
+body,
+input,
+textarea,
+select,
+button {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+
 body {
-    font: 1rem / 1.5 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
     font-weight: 300;
 }
 
 table {
     border-collapse: collapse;
+}
+
+input,
+textarea,
+select,
+button {
+    padding: .25rem;
+    font-size: .875rem;
+    border: 1px solid #dfdfdf;
+    border-radius: 3px;
+    outline: none;
+
+    &[disabled] {
+        opacity: .5;
+        cursor: default;
+    }
+}
+
+button {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+select,
+button {
+    cursor: pointer;
 }

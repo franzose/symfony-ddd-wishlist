@@ -73,10 +73,10 @@ class WishTest extends TestCase
     {
         $wish = $this->createWishWithPriceAndFund(500, 0);
         $wish->publish();
-        $depositIdOne = $wish->deposit(new Money(100, new Currency('USD')));
+        $deposit = $wish->deposit(new Money(100, new Currency('USD')));
         $wish->unpublish();
 
-        $wish->withdraw($depositIdOne);
+        $wish->withdraw($deposit->getId());
     }
 
     /**
@@ -86,9 +86,9 @@ class WishTest extends TestCase
     {
         $wish = $this->createWishWithPriceAndFund(500, 450);
         $wish->publish();
-        $depositIdOne = $wish->deposit(new Money(100, new Currency('USD')));
+        $deposit = $wish->deposit(new Money(100, new Currency('USD')));
 
-        $wish->withdraw($depositIdOne);
+        $wish->withdraw($deposit->getId());
     }
 
     /**

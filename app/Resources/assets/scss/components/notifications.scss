@@ -1,0 +1,20 @@
+.notifications {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    .alert {
+        padding: .25rem;
+        text-align: center;
+    }
+
+    .alert-danger {
+        color: #fff;
+        background-color: #ff5d21;
+    }
+
+    .close {
+        display: none;
+    }
+}

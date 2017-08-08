@@ -38,16 +38,16 @@ class Wish
         $this->updatedAt = $createdAt ?? new DateTimeImmutable();
     }
 
-    public function deposit(Money $amount): DepositId
+    public function deposit(Money $amount): Deposit
     {
         $this->assertCanDeposit($amount);
 
-        $depositId = DepositId::next();
-        $this->deposits->add(new Deposit($depositId, $this, $amount));
+        $deposit = new Deposit(DepositId::next(), $this, $amount);
+        $this->deposits->add($deposit);
 
         $this->fulfillTheWishIfNeeded();
 
-        return $depositId;
+        return $deposit;
     }
 
     private function assertCanDeposit(Money $amount)

@@ -30,8 +30,7 @@ export default {
             </table>
             <deposits
                 :isActive="shouldShowDeposits"
-                :wishName="chosenWishName"
-                :deposits="deposits"
+                :wish="chosenWish"
                 @closed="hideDeposits" />
         </div>
         `,
@@ -46,8 +45,7 @@ export default {
             pagination: {},
             lang: window.translations,
             shouldShowDeposits: false,
-            chosenWishName: '',
-            deposits: []
+            chosenWish: {},
         }
     },
     beforeRouteEnter(to, from, next) {
@@ -94,15 +92,13 @@ export default {
         },
         showDeposits(wish) {
             this.shouldShowDeposits = true;
-            this.chosenWishName = wish.name;
-            this.deposits = wish.deposits;
+            this.chosenWish = wish;
         },
         hideDeposits() {
             this.shouldShowDeposits = false;
 
             setTimeout(() => {
-                this.chosenWishName = '';
-                this.deposits = [];
+                this.chosenWish = {};
             }, 350);
         }
     }
