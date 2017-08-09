@@ -42,6 +42,7 @@ export default {
         },
         onDeposit(deposit) {
             this.wish.deposits.unshift(deposit);
+            this.wish.fund = parseInt(this.wish.fund) + parseInt(deposit.amount);
         }
     }
 };
