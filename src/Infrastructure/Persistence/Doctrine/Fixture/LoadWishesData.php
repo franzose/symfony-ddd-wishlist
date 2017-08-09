@@ -62,6 +62,9 @@ class LoadWishesData extends AbstractFixture implements OrderedFixtureInterface
             new DateTimeImmutable('now - 1 day')
         );
 
+        $unpublishedWish->publish();
+        $unpublishedWish->deposit(new Money(100, $currency));
+        $unpublishedWish->unpublish();
         $manager->persist($unpublishedWish);
         $manager->flush();
         $this->addReference('wish-unpublished', $unpublishedWish);

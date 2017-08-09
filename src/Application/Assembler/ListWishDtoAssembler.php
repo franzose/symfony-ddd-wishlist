@@ -35,6 +35,7 @@ class ListWishDtoAssembler
     {
         return array_map(function (Deposit $deposit) {
             $dto = new DepositDto();
+            $dto->id = $deposit->getId()->getId();
             $dto->amount = $deposit->getMoney()->getAmount();
             $dto->currency = $deposit->getMoney()->getCurrency()->getCode();
             $dto->createdAt = $deposit->getDate()->format('d.m.Y H:i');

@@ -57,7 +57,7 @@ class WishlistControllerTest extends WebTestCase
 
         $crawler = $client->request('GET', '/wishes');
 
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
         $this->assertThereIsOnlyOneWishlist($crawler);
     }
 
@@ -85,7 +85,7 @@ class WishlistControllerTest extends WebTestCase
 
         $response = $client->getResponse();
 
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
         static::assertInstanceOf(JsonResponse::class, $response);
 
         $actual = $this->parseJson($response);
@@ -151,7 +151,7 @@ class WishlistControllerTest extends WebTestCase
 
         $this->sendPublishRequest($client, 'nonsense');
 
-        $this->assertStatusCode(404, $client);
+        $this->assertStatusCode(Response::HTTP_NOT_FOUND, $client);
     }
 
     public function testPublishShouldPublishTheWish()
@@ -163,7 +163,7 @@ class WishlistControllerTest extends WebTestCase
         $this->sendPublishRequest($client, $wishId);
         $response = $client->getResponse();
 
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
         static::assertInstanceOf(JsonResponse::class, $response);
         static::assertEquals(
             [
@@ -183,7 +183,7 @@ class WishlistControllerTest extends WebTestCase
 
         $this->sendUnpublishRequest($client, 'nonsense');
 
-        $this->assertStatusCode(404, $client);
+        $this->assertStatusCode(Response::HTTP_NOT_FOUND, $client);
     }
 
     public function testUnpublishShouldUnpublishTheWish()
@@ -195,7 +195,7 @@ class WishlistControllerTest extends WebTestCase
         $this->sendUnpublishRequest($client, $wishId);
         $response = $client->getResponse();
 
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
         static::assertInstanceOf(JsonResponse::class, $response);
         static::assertEquals(
             [
@@ -243,7 +243,7 @@ class WishlistControllerTest extends WebTestCase
 
         $response = $client->getResponse();
 
-        $this->assertStatusCode(200, $client);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
         static::assertInstanceOf(JsonResponse::class, $response);
 
         $json = $this->parseJson($response);
@@ -327,6 +327,71 @@ class WishlistControllerTest extends WebTestCase
             'POST',
             $this->router->generate('wishlist.wish.deposit', compact('wishId')),
             compact('amount'),
+            [],
+            ['HTTP_X-Requested-With' => 'XMLHttpRequest']
+        );
+    }
+
+    public function testMustNotWithdrawUnpublishedWish()
+    {
+        $client = $this->makeClient();
+        $wish = $this->fixtures['wish-unpublished'];
+        $depositId = $wish->getDeposits()[0]->getId()->getId();
+
+        $this->sendWithdrawRequest($client, $wish->getId()->getId(), $depositId);
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertFalse($json['success']);
+        static::assertArrayHasKey('message', $json);
+    }
+
+    public function testMustNotWithdrawFulfilledWish()
+    {
+        $client = $this->makeClient();
+        $wish = $this->fixtures['wish-fulfilled'];
+        $depositId = $wish->getDeposits()[0]->getId()->getId();
+
+        $this->sendWithdrawRequest($client, $wish->getId()->getId(), $depositId);
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertFalse($json['success']);
+        static::assertArrayHasKey('message', $json);
+    }
+
+    public function testSimpleWithdraw()
+    {
+        $client = $this->makeClient();
+        $wish = $this->fixtures['wish-0'];
+        $wishId = $wish->getId()->getId();
+        $depositId = $wish->getDeposits()[0]->getId()->getId();
+
+        $this->sendWithdrawRequest($client, $wishId, $depositId);
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_OK, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertTrue($json['success']);
+    }
+
+    private function sendWithdrawRequest(Client $client, string $wishId, string $depositId): void
+    {
+        $client->request(
+            'DELETE',
+            $this->router->generate(
+                'wishlist.wish.withdraw',
+                compact('wishId', 'depositId')
+            ),
+            [],
             [],
             ['HTTP_X-Requested-With' => 'XMLHttpRequest']
         );

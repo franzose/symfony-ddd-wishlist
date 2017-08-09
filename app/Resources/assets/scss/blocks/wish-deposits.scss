@@ -26,6 +26,16 @@
         overflow: auto;
     }
 
+    &__withdraw {
+        text-align: right;
+    }
+
+    &__withdraw-button {
+        position: relative;
+        top: -.125rem;
+        font-size: .65rem;
+    }
+
     tr {
         display: flex;
         justify-content: space-between;

@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
 use Symfony\Component\Validator\Constraints\Type;
+use Symfony\Component\Validator\Constraints\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Wishlist\Application\WishlistInterface;
 use Wishlist\Infrastructure\Validation\ConstraintViolationListTransformer;
@@ -167,6 +168,28 @@ class WishlistController
         return new JsonResponse([
             'success' => true,
             'deposit' => $deposit,
+        ]);
+    }
+
+    /**
+     * @Route(
+     *     "/wishes/{wishId}/{depositId}/withdraw",
+     *     name="wishlist.wish.withdraw",
+     *     methods={"DELETE"},
+     *     options={"expose"=true}
+     * )
+     *
+     * @param string $wishId
+     * @param string $depositId
+     *
+     * @return JsonResponse
+     */
+    public function withdrawAction(string $wishId, string $depositId)
+    {
+        $this->wishlist->withdraw($wishId, $depositId);
+
+        return new JsonResponse([
+            'success' => true
         ]);
     }
 }

@@ -4,7 +4,7 @@ namespace Wishlist\Application\Dto;
 
 class DepositDto implements \JsonSerializable
 {
-    public $depositId;
+    public $id;
     public $amount;
     public $currency;
     public $createdAt;
@@ -12,7 +12,7 @@ class DepositDto implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'depositId' => $this->depositId,
+            'id' => $this->id,
             'amount' => $this->amount,
             'currency' => $this->currency,
             'createdAt' => $this->createdAt
