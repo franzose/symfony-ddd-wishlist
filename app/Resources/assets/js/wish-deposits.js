@@ -13,10 +13,11 @@ export default {
                     </div>
                 </caption>
                 <tbody class="wish-deposits__rows">
-                <tr is="new-deposit-form" :wishId="wish.id" @deposit="onDeposit" />
+                <tr is="new-deposit-form" :wish="wish" />
                 <tr is="deposit"
                     v-for="deposit in wish.deposits"
                     :lang="lang"
+                    :wish="wish"
                     :deposit="deposit"
                     :key="deposit.id" />
                 </tbody>
@@ -39,10 +40,6 @@ export default {
     methods: {
         close() {
             this.$emit('closed');
-        },
-        onDeposit(deposit) {
-            this.wish.deposits.unshift(deposit);
-            this.wish.fund = parseInt(this.wish.fund) + parseInt(deposit.amount);
         }
     }
 };

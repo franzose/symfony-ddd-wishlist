@@ -22,7 +22,7 @@ export default {
     </tr>
     `,
     props: [
-        'wishId'
+        'wish'
     ],
     data() {
         return {
@@ -40,7 +40,7 @@ export default {
         },
         makeDeposit() {
             const url = Routing.generate('wishlist.wish.deposit', {
-                wishId: this.wishId
+                wishId: this.wish.id
             });
 
             const payload = new FormData();
@@ -49,7 +49,10 @@ export default {
             Vue.http.post(url, payload)
                 .then(response => response.body)
                 .then(response => {
-                    this.$emit('deposit', response.deposit);
+                    let deposit = response.deposit;
+
+                    this.wish.deposits.unshift(deposit);
+                    this.wish.fund = parseInt(this.wish.fund) + parseInt(deposit.amount);
                 })
                 .catch(response => {
                     this.$notify({
