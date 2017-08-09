@@ -21,7 +21,6 @@ class Wish
     /** @var Deposit[] */
     private $deposits;
     private $published = false;
-    private $fulfilled = false;
     private $createdAt;
     private $updatedAt;
 
@@ -46,8 +45,6 @@ class Wish
         $deposit = new Deposit(DepositId::next(), $this, $amount);
         $this->deposits->add($deposit);
 
-        $this->fulfillTheWishIfNeeded();
-
         return $deposit;
     }
 
@@ -57,7 +54,7 @@ class Wish
             throw new WishIsUnpublishedException($this->getId());
         }
 
-        if ($this->fulfilled) {
+        if ($this->isFulfilled()) {
             throw new WishIsFulfilledException($this->getId());
         }
 
@@ -67,16 +64,9 @@ class Wish
         );
     }
 
-    private function fulfillTheWishIfNeeded(): void
-    {
-        if ($this->getFund()->greaterThanOrEqual($this->expense->getPrice())) {
-            $this->fulfilled = true;
-        }
-    }
-
     public function isFulfilled(): bool
     {
-        return $this->fulfilled;
+        return $this->getFund()->greaterThanOrEqual($this->expense->getPrice());
     }
 
     public function withdraw(DepositId $depositId)
@@ -85,7 +75,7 @@ class Wish
             throw new WishIsUnpublishedException($this->getId());
         }
 
-        if ($this->fulfilled) {
+        if ($this->isFulfilled()) {
             throw new WishIsFulfilledException($this->getId());
         }
 

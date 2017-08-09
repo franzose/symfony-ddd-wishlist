@@ -81,6 +81,24 @@ class LoadWishesData extends AbstractFixture implements OrderedFixtureInterface
         $manager->persist($almostFulfilledWish);
         $manager->flush();
         $this->addReference('wish-almost-fulfilled', $almostFulfilledWish);
+
+        $fulfilledWish = new Wish(
+            WishId::next(),
+            new WishName($faker->sentence(3)),
+            Expense::fromCurrencyAndScalars(
+                $currency,
+                50000,
+                100,
+                49900
+            ),
+            new DateTimeImmutable('now - 5 days')
+        );
+
+        $fulfilledWish->publish();
+        $fulfilledWish->deposit(new Money(100, $currency));
+        $manager->persist($fulfilledWish);
+        $manager->flush();
+        $this->addReference('wish-fulfilled', $fulfilledWish);
     }
 
     /**

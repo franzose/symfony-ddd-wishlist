@@ -302,6 +302,25 @@ class WishlistControllerTest extends WebTestCase
         static::assertArrayHasKey('message', $json);
     }
 
+    public function testMustNotDepositToFulfilledWish()
+    {
+        $client = $this->makeClient();
+
+        $this->sendDepositRequest(
+            $client,
+            $this->fixtures['wish-fulfilled']->getId()->getId(),
+            999
+        );
+
+        $response = $client->getResponse();
+        $json = $this->parseJson($response);
+        $this->assertStatusCode(Response::HTTP_UNPROCESSABLE_ENTITY, $client);
+        static::assertInstanceOf(JsonResponse::class, $response);
+        static::assertArrayHasKey('success', $json);
+        static::assertFalse($json['success']);
+        static::assertArrayHasKey('message', $json);
+    }
+
     private function sendDepositRequest(Client $client, string $wishId, $amount): void
     {
         $client->request(
