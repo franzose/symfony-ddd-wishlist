@@ -10,13 +10,9 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\GreaterThan;
-use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Required;
-use Symfony\Component\Validator\Constraints\Type;
-use Symfony\Component\Validator\Constraints\Uuid;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Wishlist\Application\WishlistInterface;
-use Wishlist\Infrastructure\Validation\ConstraintViolationListTransformer;
 use Wishlist\Infrastructure\Validation\ConstraintViolationListTransformerInterface;
 
 class WishlistController
