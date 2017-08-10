@@ -252,7 +252,7 @@ class WishlistControllerTest extends WebTestCase
         static::assertArrayHasKey('deposit', $json);
 
         $depositKeys = [
-            'depositId',
+            'id',
             'amount',
             'currency',
             'createdAt'
