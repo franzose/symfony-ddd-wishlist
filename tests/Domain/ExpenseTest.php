@@ -21,8 +21,10 @@ class ExpenseTest extends TestCase
     public function nonsensePriceDataProvider()
     {
         return [
-            'Price must greater than zero' => [0, 0],
+            'Price must be greater than zero' => [0, 0],
+            'Fee must be greater than zero' => [1, 0],
             'Price must be positive' => [-1, -1],
+            'Fee must be positive' => [1, -1]
         ];
     }
 
