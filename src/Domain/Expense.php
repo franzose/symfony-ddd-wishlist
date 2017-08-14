@@ -32,7 +32,8 @@ final class Expense
 
         Assert::lessThan($fee, $price, 'Fee must be less than price.');
 
-        if (!empty($initialFund)) {
+        if (null !== $initialFund) {
+            Assert::greaterThanEq($initialFund, 0);
             Assert::lessThan($initialFund, $price, 'Initial fund must be less than price.');
         }
 

@@ -13,18 +13,19 @@ class ExpenseTest extends TestCase
      * @expectedException \InvalidArgumentException
      * @dataProvider nonsensePriceDataProvider
      */
-    public function testPriceAndFeeMustBePositiveNumber($price, $fee)
+    public function testPriceAndFeeMustBePositiveNumber($price, $fee, $initialFund)
     {
-        Expense::fromCurrencyAndScalars(new Currency('USD'), $price, $fee, 0);
+        Expense::fromCurrencyAndScalars(new Currency('USD'), $price, $fee, $initialFund);
     }
 
     public function nonsensePriceDataProvider()
     {
         return [
-            'Price must be greater than zero' => [0, 0],
-            'Fee must be greater than zero' => [1, 0],
-            'Price must be positive' => [-1, -1],
-            'Fee must be positive' => [1, -1]
+            'Price must be greater than zero' => [0, 0, 0],
+            'Fee must be greater than zero' => [1, 0, 0],
+            'Price must be positive' => [-1, -1, 0],
+            'Fee must be positive' => [1, -1, 0],
+            'Initial fund must be positive' => [2, 1, -1],
         ];
     }
 
