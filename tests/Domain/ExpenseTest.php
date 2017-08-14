@@ -21,20 +21,9 @@ class ExpenseTest extends TestCase
     public function nonsensePriceDataProvider()
     {
         return [
-            'Price must not be NULL' => [null, null],
-            'Price must not be empty' => ['', ''],
-            'Price must be numeric' => ['nonsense', 'nonsense'],
-            'Price must greater than zero' => ['0', 0],
-            'Price must be positive' => ['-1', -1],
+            'Price must greater than zero' => [0, 0],
+            'Price must be positive' => [-1, -1],
         ];
-    }
-
-    /**
-     * @expectedException \InvalidArgumentException
-     */
-    public function testInitialFundMustBeANumberIfProvided()
-    {
-        Expense::fromCurrencyAndScalars(new Currency('USD'), 100, 50, 'nonsense');
     }
 
     /**

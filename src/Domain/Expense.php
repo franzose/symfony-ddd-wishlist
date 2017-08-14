@@ -19,18 +19,20 @@ final class Expense
         $this->initialFund = $initialFund;
     }
 
-    public static function fromCurrencyAndScalars(Currency $currency, $price, $fee, $initialFund = null)
-    {
+    public static function fromCurrencyAndScalars(
+        Currency $currency,
+        int $price,
+        int $fee,
+        int $initialFund = null
+    ) {
         foreach ([$price, $fee] as $argument) {
             Assert::notEmpty($argument);
-            Assert::numeric($argument);
             Assert::greaterThan($argument, 0);
         }
 
         Assert::lessThan($fee, $price, 'Fee must be less than price.');
 
         if (!empty($initialFund)) {
-            Assert::numeric($initialFund);
             Assert::lessThan($initialFund, $price, 'Initial fund must be less than price.');
         }
 
