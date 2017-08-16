@@ -1,4 +1,4 @@
-[![](https://img.shields.io/packagist/dt/franzose/wishlist.svg)](https://packagist.org/packages/franzose/wishlist)
+[![](https://img.shields.io/packagist/dt/franzose/symfony-ddd-wishlist.svg)](https://packagist.org/packages/franzose/symfony-ddd-wishlist)
 [![](https://travis-ci.org/franzose/symfony-ddd-wishlist.svg?branch=master)](https://travis-ci.org/franzose/symfony-ddd-wishlist)
 [![](https://scrutinizer-ci.com/g/franzose/symfony-ddd-wishlist/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/franzose/symfony-ddd-wishlist?branch=master)
 
