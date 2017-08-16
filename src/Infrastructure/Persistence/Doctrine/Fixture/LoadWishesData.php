@@ -41,7 +41,7 @@ class LoadWishesData extends AbstractFixture implements OrderedFixtureInterface
             $wish->publish();
 
             foreach (range(0, $faker->numberBetween(5, 25)) as $depositIndex) {
-                $wish->deposit(new Money($faker->numberBetween(10, 50), $currency));
+                $wish->deposit(new Money($faker->numberBetween(60, 120), $currency));
             }
 
             $manager->persist($wish);
