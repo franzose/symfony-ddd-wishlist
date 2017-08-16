@@ -10,6 +10,7 @@ use Money\Currency;
 use Money\Money;
 use Webmozart\Assert\Assert;
 use Wishlist\Domain\Exception\DepositDoesNotExistException;
+use Wishlist\Domain\Exception\DepositIsTooSmallException;
 use Wishlist\Domain\Exception\WishIsFulfilledException;
 use Wishlist\Domain\Exception\WishIsUnpublishedException;
 
@@ -56,6 +57,10 @@ class Wish
 
         if ($this->isFulfilled()) {
             throw new WishIsFulfilledException($this->getId());
+        }
+
+        if ($amount->lessThan($this->getFee())) {
+            throw new DepositIsTooSmallException($amount, $this->getFee());
         }
 
         Assert::true(

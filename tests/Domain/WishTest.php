@@ -29,6 +29,17 @@ class WishTest extends TestCase
         static::assertTrue($diff->s === 0);
     }
 
+    /**
+     * @expectedException \Wishlist\Domain\Exception\DepositIsTooSmallException
+     */
+    public function testMustDeclineDepositIfItIsLessThanFee()
+    {
+        $wish = $this->createWishWithPriceAndFee(1000, 100);
+        $wish->publish();
+
+        $wish->deposit(new Money(50, new Currency('USD')));
+    }
+
     public function testExtraDepositMustFulfillTheWish()
     {
         $wish = $this->createWishWithPriceAndFund(1000, 900);
