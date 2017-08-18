@@ -76,6 +76,14 @@ class Wish
 
     public function withdraw(DepositId $depositId)
     {
+        $this->assertCanWithdraw();
+
+        $deposit = $this->getDepositById($depositId);
+        $this->deposits->removeElement($deposit);
+    }
+
+    private function assertCanWithdraw()
+    {
         if (!$this->published) {
             throw new WishIsUnpublishedException($this->getId());
         }
@@ -83,9 +91,6 @@ class Wish
         if ($this->isFulfilled()) {
             throw new WishIsFulfilledException($this->getId());
         }
-
-        $deposit = $this->getDepositById($depositId);
-        $this->deposits->removeElement($deposit);
     }
 
     private function getDepositById(DepositId $depositId): Deposit
