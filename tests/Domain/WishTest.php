@@ -177,13 +177,11 @@ class WishTest extends TestCase
         $daysToGo = ceil($price / $fee);
 
         $expected = (new DateTimeImmutable())->add(new DateInterval("P{$daysToGo}D"));
-        $diff = $wish->predictFulfillmentDateBasedOnFee()->diff($expected);
-        static::assertTrue($diff->d === 0);
-        static::assertTrue($diff->m === 0);
-        static::assertTrue($diff->y === 0);
-        static::assertTrue($diff->h === 0);
-        static::assertTrue($diff->i === 0);
-        static::assertTrue($diff->s === 0);
+
+        static::assertEquals(
+            $expected->getTimestamp(),
+            $wish->predictFulfillmentDateBasedOnFee()->getTimestamp()
+        );
     }
 
     public function testFulfillmentDatePredictionBasedOnFund()
@@ -195,13 +193,11 @@ class WishTest extends TestCase
         $daysToGo = ceil(($price - $fund) / $fee);
 
         $expected = (new DateTimeImmutable())->add(new DateInterval("P{$daysToGo}D"));
-        $diff = $wish->predictFulfillmentDateBasedOnFund()->diff($expected);
-        static::assertTrue($diff->d === 0);
-        static::assertTrue($diff->m === 0);
-        static::assertTrue($diff->y === 0);
-        static::assertTrue($diff->h === 0);
-        static::assertTrue($diff->i === 0);
-        static::assertTrue($diff->s === 0);
+
+        static::assertEquals(
+            $expected->getTimestamp(),
+            $wish->predictFulfillmentDateBasedOnFund()->getTimestamp()
+        );
     }
 
     public function testPublishShouldPublishTheWish()
