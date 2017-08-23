@@ -2,6 +2,7 @@
 
 namespace Wishlist\Tests\Domain;
 
+use Wishlist\Domain\DepositId;
 use Wishlist\Domain\WishId;
 use PHPUnit\Framework\TestCase;
 
@@ -23,8 +24,10 @@ class IdentityTest extends TestCase
         $wishIdOne = WishId::fromString($string);
         $wishIdTwo = WishId::fromString($string);
         $wishIdThree = WishId::next();
+        $depositId = DepositId::fromString('550e8400-e29b-41d4-a716-446655440000');
 
         static::assertTrue($wishIdOne->equalTo($wishIdTwo));
         static::assertFalse($wishIdTwo->equalTo($wishIdThree));
+        static::assertFalse($wishIdOne->equalTo($depositId));
     }
 }
